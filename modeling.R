@@ -3,4 +3,4 @@ library(randomForest)
 
 nfl<-read.csv("trainingdata.csv")[,-c(1,15)]
 
-#lm
+#lm changes
