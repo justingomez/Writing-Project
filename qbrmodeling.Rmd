@@ -1,0 +1,24 @@
+---
+title: "QBR modeling"
+author: "MG"
+date: "February 23, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r warning=F,message=F}
+ setwd("C:/Users/w76c139/Box Sync/SecondSemesterStatistics_V3")
+trainingdata<-read.csv("trainingdata.csv",header=T)
+summary(trainingdata)
+trainingdata$compp<-trainingdata$comp/trainingdata$att
+require(mgcv)
+gam1<-gam(qbr~result+s(compp,k=10,bs="ts")+s(att,k=15,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum,data=trainingdata)
+plot(gam1,pages=2,scale=0)
+summary(gam1)
+gam.check(gam1)
+
+```
+
