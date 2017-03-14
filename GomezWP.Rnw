@@ -1,0 +1,158 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{url}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%   HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Montana State University}\\[1.5cm] % Name of your university/college
+\textsc{\Large Department of Mathematical Sciences}\\[0.5cm] % Major heading such as course name
+\textsc{\large Writing Project}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%   TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Investigation of ESPN's Total QBR}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%   AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Justin \textsc{Gomez} % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr. Mark \textsc{Greenwood} % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[2cm]
+
+%----------------------------------------------------------------------------------------
+%   DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large April 14, 2017}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%   LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\includegraphics[width=5cm]{MSU-vert.png} % Include a department/university logo - this will require the graphicx package
+ 
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+
+\begin{abstract}
+junk.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{Total Quarterback Rating}
+
+\subsection{Study Design}
+
+\section{Fitted Models}
+
+\section{Linear Models}
+
+\subsection{Explanation and Motivation}
+
+\subsection{Performance}
+
+\subsection{Bagging}
+
+\subsection{Summary}
+
+\section{Generalized Additive Models}
+
+\subsection{Explanation and Motivation}
+
+\subsection{Performance}
+
+\subsection{Bagging?}
+
+\subsection{Summary}
+
+\section{Regression Trees}
+
+\subsection{Explanation and Motivation}
+
+\subsection{Performance}
+
+\subsection{Boosting?}
+
+\subsection{Summary}
+
+\newpage
+\section{Random Forests}
+
+\subsection{Explanation and Motivation}
+
+\subsection{Performance}
+
+\subsection{Boosting?}
+
+\subsection{Summary}
+
+\section{Conclusion}
+
+\subsection{Final Model Selection}
+
+
+%referencing tables and firgures:
+%Table~\ref{tab:widgets} <-need to include \label in \caption
+%Figure~\ref{fig:frog} <-also include \label in \caption
+
+% Commands to include a figure:
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{frog.jpg}
+\caption{\label{fig:frog}This is a figure caption.}
+\end{figure}
+
+\begin{table}
+\centering
+\begin{tabular}{l|r}
+Item & Quantity \\\hline
+Widgets & 42 \\
+Gadgets & 13
+\end{tabular}
+\caption{\label{tab:widgets}An example table.}
+\end{table}
+
+%Citing Sources:
+Blablabla said Nobody \cite{qbr1}. Also \cite{qbr2}, and \cite{lm}, and \cite{bag} and \cite{gam}.\\
+
+\newpage
+\begin{flushleft}
+\bibliographystyle{acm}
+\bibliography{wp}
+\end{flushleft}
+\end{document}
+              

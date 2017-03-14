@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{lm}
+{\sc Faraway, J.~J.}
+\newblock {\em Linear Models with R}.
+\newblock Taylor and Francis, 2009.
+
+\bibitem{gam}
+{\sc James, G., Witten, D., Hastie, T., and Tibshirani, R.}
+\newblock {\em An Introduction to Statistical Learning}.
+\newblock Springer, 2015.
+
+\bibitem{bag}
+{\sc Kuhn, M., and Johnson, K.}
+\newblock {\em Applied Predictive Modeling}.
+\newblock Springer, 2013.
+
+\bibitem{qbr2}
+{\sc Kutz, S., and Burke, B.}
+\newblock How is {T}otal {QBR} {C}alculated? we explain our quarterback rating.
+\newblock
+  \url{http://www.espn.com/blog/statsinfo/post/_/id/123701/how-is-total-qbr-calculated-we-explain-our-quarterback-rating},
+  2016.
+
+\bibitem{qbr1}
+{\sc Oliver, D.}
+\newblock {Guide to the {T}otal {Q}uarterback {R}ating}.
+\newblock
+  \url{http://www.espn.com/nfl/story/_/id/6833215/explaining-statistics-total-quarterback-rating},
+  2011.
+
+\end{thebibliography}

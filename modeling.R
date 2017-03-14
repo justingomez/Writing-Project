@@ -1,6 +1,8 @@
 library(randomForest)
 library(rpart)
 library(car)
+library(mgcv)
+library(gbm)
 
 train<-read.csv("trainingdata.csv")[,-c(1,15)]
 train$compp<-train$comp/train$att
@@ -62,7 +64,7 @@ crPlots(nfl.lm3)
 crPlots(nfl.lm4)
 crPlots(nfl.lm5)
 
-
+#trees
 nfl.tree1<-rpart(qbr~comp+att+yds+td+int+sack+fum,data=train,method="anova")
 nfl.tree2<-rpart(qbr~compp+yds+td+int+sack+fum,data=train,method="anova")
 nfl.tree3<-rpart(qbr~comp+att+yds+td+int+sack+fum+result,data=train,method="anova")
@@ -96,6 +98,14 @@ forest.rmse3<-sqrt((sum(forest.pred3-test$qbr)^2)/dim(test)[1]) #15.95
 forest.pred4<-predict(nfl.forest4,newdata=test)
 forest.rmse4<-sqrt((sum(forest.pred4-test$qbr)^2)/dim(test)[1]) #8.37
 
+#gam
+gam1<-gam(qbr~result+s(compp,k=10,bs="ts")+s(att,k=15,bs="ts")+
+            s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+s(int,k=3,bs="ts")+
+            s(sack,k=3,bs="ts")+fum,data=train)
+plot(gam1,pages=2,scale=0)
+summary(gam1)
+gam.check(gam1)
+
 
 #bagging lm
 n<-1000
@@ -103,12 +113,20 @@ boot.pred<-matrix(12,ncol=n,nrow=dim(test)[1])
 for (i in 1:n) {
   these<-sample(rownames(train),dim(train)[1],replace=TRUE)
   boot<-train[these,]
-  lm.boot<-lm(qbr~compp+yds+td+int+sack+fum,data=boot)
+  lm.boot<-lm(qbr~compp+yds+td+int+sack+fum+yds*td+yds*int+td*int+sack*fum,
+              data=boot)
   boot.pred[,i]<-predict(lm.boot,newdata=test)
 }
-#oob error
 mean.pred<-rep(12,dim(test)[1])
 for(i in 1:dim(test)[1]){
   mean.pred[i]<-mean(boot.pred[i,])
 }
-boot.rmse<-sqrt((sum(mean.pred-test$qbr)^2)/dim(test)[1]) #12.60 for 10; 15.92 for 1000
+boot.rmse<-sqrt((sum(mean.pred-test$qbr)^2)/dim(test)[1]) #12.60 for 10; 15.92 for 1000; 16.09 for 100000
+#previous #s were for lm2
+#for lm6 (best) error is 11.08 for 1000; 11.14 for 10000
+
+#boosting trees
+try<-gbm(qbr~compp+yds+td+int+sack+fum,data=train,n.tree=1000,distribution="gaussian",
+         cv.folds=2)
+diagnostic<-gbm.perf(try)
+plot(try)
