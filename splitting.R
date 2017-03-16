@@ -1,4 +1,3 @@
-setwd("~/Writing Project")
 library(splitstackshape)
 
 all.data<-read.csv("weeklynflstats.csv")[,-1] #dim: 5258 x 13

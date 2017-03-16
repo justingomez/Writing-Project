@@ -1,4 +1,3 @@
-setwd("~/Writing Project")
 library(rvest)
 library(stringr)
 

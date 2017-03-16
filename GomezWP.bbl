@@ -1,5 +1,9 @@
 \begin{thebibliography}{1}
 
+\bibitem{passer}
+{NFL} {Q}uarterback {R}ating {F}ormula.
+\newblock \url{http://www.nfl.com/help/quarterbackratingformula}.
+
 \bibitem{lm}
 {\sc Faraway, J.~J.}
 \newblock {\em Linear Models with R}.
@@ -21,6 +25,13 @@
 \newblock
   \url{http://www.espn.com/blog/statsinfo/post/_/id/123701/how-is-total-qbr-calculated-we-explain-our-quarterback-rating},
   2016.
+
+\bibitem{anat}
+{\sc Lillibridge, M.}
+\newblock The {A}natomy of a 53-{M}an {R}oster in the {NFL}.
+\newblock
+  \url{http://bleacherreport.com/articles/1640782-the-anatomy-of-a-53-man-roster-in-the-nfl},
+  2013.
 
 \bibitem{qbr1}
 {\sc Oliver, D.}
