@@ -3,6 +3,7 @@ library(rpart)
 library(car)
 library(mgcv)
 library(gbm)
+library(xtable)
 
 train<-read.csv("trainingdata.csv")[,-c(1,15)]
 train$compp<-train$comp/train$att

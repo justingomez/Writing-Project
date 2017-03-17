@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{url}
+\usepackage{caption}
 
 \begin{document}
 
@@ -78,7 +79,8 @@ In American Football, the success of a team can often be attributed to two thing
 \begin{figure}[h]
 \centering
 \includegraphics[width=1.2\textwidth]{salary.jpeg}
-\caption{\label{fig:sal} Average salary for current NFL players by position. Data acquired from \url{http://www.spotrac.com/nfl/contracts/}}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:sal} \textbf{Average salary for current NFL players by position. Data acquired from \url{http://www.spotrac.com/nfl/contracts/}}}
 \end{figure}
 
 \newpage
@@ -91,16 +93,128 @@ Let's take a look at how EPSN's QBR tries to better capture the performance of a
 To answer this question, we need as much data on the quarterback as we can collect. Matching the amount of information that goes into QBR will be near impossible, but we can still collect the important information that helps summarize how well a quarterback performed. When ESPN came out with QBR in 2011, they went ahead and calculated QBR for quarterbacks all the way back to the 2006 season. We will thus gather information on all of the quarterbacks that played for at least twenty action plays (the minimum requirement for QBR to have been calculated). In our data set we have the following game statistics: number of completions, number of attempts, total yards gained, total number of touchdowns scored, number of interceptions thrown, number of sacks taken, number of fumbles by the quarterback, and the end result of the game (win, loss, tie). Once all of the data have been collected, we end up with five thousand fifty-eight games to work with (after dropping those that had incomplete data, which did not appear to be systematic). Our goal here is prediction: we want to predict total QBR with the data we collected. As is often the case with prediction, we would like to know our models' predictive ability. To obtain this measure, we will split our data into three pieces: a ``training" set that will be used to build our models and will account for about 50\% of our full data set, a ``testing" set that will be used to assess the predictive ability of our models and will account for about 30\% of our full data set, and finally a ``validation" set that will be used only once on the model we choose as our best model to gain a final score and will account for the remaining 20\% of our full data set. The testing data set will be used to tune our models, so it will potentially be tested on several times for each approach we take. Once the best model is selected, the validation set will be used once, and will tell us how well our tuned model performs, and further tuning will not be done. To obtain each of these data sets, we will take a stratified random sample of two hundred and thirty-nine games from each season to control for any changes that may have been made to the QBR formula over time. This creates the training set. To create the testing set, we will take the remaining data and obtain a stratified random sample of one hundred and forty-three games from each season. The remaining data will the create the validation set. To develop our predictions, we will look at four methods: linear models, generalized additive models, regression trees, and random forests.\\
 
 \section{Fitted Models}
-Before we begin fitting models according to specific methods, let's discuss the models that we will consider fitting with the different methods. 
+Before we begin fitting models according to specific methods, let's discuss the models that we will consider fitting with the different methods. Our data set consists of twelve variables: the eight game statistics mentioned above as well as the resulting quarterback's total QBR, the season and the week the game occurred in, and the name of the quarterback. We are not interested in any specific quarterback nor are we interested in any effect time may have either at the season or week level, so these variables will not be used in any model we build. Figure~\ref{fig:corr} displays the correlation between our quantitative variables.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.2\textwidth]{correlation.jpeg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:corr} \textbf{Plot of the correlations between quantitative variables. Size and color of the squares indicate the strength and direction of the relationship. The lower diagonal also gives the correlation coefficients, rounded to two decimal places.}}
+\end{figure}
+
+Many of the relationships that we see are not surprising, such as the strong positive correlation between the number of completions and the number of attempts or the number of completions and the number of yards. We can also get an idea of each variable's relationship with QBR. Again, not many surprises here. We see positive relationships with completions, yards, and touchdowns, and negative relationships with interceptions, sacks, and fumbles. The only relationship that is a little surprising is the weak negative relationship between pass attempts and QBR, although this may be due to the fact that, in general, quarterbacks in losing situations make more passes. Perhaps a better way bring passing attempts and completions into the model would be as completion percentage, defined as the number of completions divided by the number of attempts. Figure~\ref{fig:corr2} displays the relationships between the variables with completion percentage rather than the two separate variables.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.2\textwidth]{correlation2.jpeg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:corr2} \textbf{Plot of the correlations between quantitative variables with completion percentage rather than number of completions and number of attempts.}}
+\end{figure}
+
+The relationships between the variables and completion percentage (compp in the figure) aren't altogether unexpected. With all of this information, let's build a few candidate models. Naturally, for all of these models total QBR is the response variable. The first model we will consider contains only the quantitative variables. This model contains the seven variables that are typically the most important summaries of a quarterback's game, and examining them often gives a good picture of how the quarterback performed. The second model that we will consider also contains the quantitative variables, but rather than having the number of attempts and completions, we will substitute completion percentage. For our third and fourth models, we will add our only categorical variable, outcome of the game, to model one and model two, and look for improvements to predictive ability. The final model we will examine is a model with interactions between all unique pairwise combinations of touchdowns, interceptions, sacks, and fumbles. That gives us six interaction terms, for which we will also have the four main effects, and the main effects for yards and completion percentage. Using these different combinations of variables will act as our tuning step when we begin fitting our models according to the various methods. Table~\ref{tab:models} summarizes the variables that are going into each model.\\
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+Variables & Abbrev. & Model 1 & Model 2 & Model 3 & Model 4 & Model 5 \\
+\hline
+Completions & Comp & x & & x & & \\
+\hline
+Attempts & Att & x & & x & & \\
+\hline
+Completion Percent & Compp & & x & & x & x \\
+\hline
+Yards & Yds & x & x & x & x & x \\
+\hline
+Touchdowns & Td & x & x & x & x & x \\
+\hline
+Interceptions & Int & x & x & x & x & x \\
+\hline
+Sacks & S & x & x & x & x & x \\
+\hline
+Fumbles & F & x & x & x & x & x \\
+\hline
+Game Result & GR & & & x & x & \\
+\hline
+Interactions & & & & & & x \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:models} \textbf{Table summarizing the variables in each model.}}
+\end{table}
 
 \section{Linear Models}
-We will start with the most simple of the methods we are considering, the linear model. While not often used for prediction but rather more commonly used for inference, we can learn a great deal about how our collected data play into determining total QBR, and if we can accurately predict QBR with a simple linear model, then we will have reason to question what ESPN is doing with their thousands of lines of code. \\
+We will start with the most simple of the methods we are considering, the linear model. While not often used for prediction but rather more commonly used for inference, we can learn a great deal about how our collected data play into determining total QBR. But before we start fitting models and checking predictive ability, let's start with a review of how linear models are fit, the basic assumptions that must be met, and a few results of these assumptions.\\
 
 \subsection{Explanation and Motivation}
 
+
 \subsection{Performance}
+Now that we have an understanding for how linear models are fit, let's start our process of finding the linear model with the best predictive ability that we can. To begin we will find the parameter estimates for the variables specified in Model 1. Fitting a linear model in R is a simple task with the use of the \texttt{lm} function and yields the following model:\\
+
+\begin{align*}
+\widehat{QBR}&=55.7273+1.7082Comp-1.4805Att+0.0984Yds\\
+&+5.3300Td-7.6603Int-3.6810S-5.8457F.
+\end{align*}
+
+This model accounts for about 58\% of the variation in the data, not a bad start, but we would like to improve upon this number. With the fitted model, we can obtain predictions for our testing data set. These predictions are obtained by substituting the values of the predictor variables into the fitted equation, yielding an estimated total QBR for those game stats. We will do this for all fifteen hundred and seventy-three games in the testing data set. Then, we will compare our predicted values to the actual values from the collected data to obtain a single value quantifying the prediction error of our model. Root mean squared error (RMSE), as defined in Equation~\ref{eq:rmse}, will be used to compare the models and assess overall ability.\\
+
+\begin{equation} \label{eq:rmse}
+\sqrt{\frac{\sum_{i=1}^{n}(\hat{y}-y)^{2}}{n}}
+\end{equation}
+
+With this equation, the RMSE for Model 1 is 20.3269. Recall that total QBR ranges from zero to one hundred, so the RMSE for this model is rather high. We can continue on, fitting linear models with our other combinations of predictors and obtaining RMSEs for those models as well. In this model fitting process, it should be noted that Model 3 and 4, the models with the categorical variable for win/loss/tie, indicated that the associated coefficients for this variable were not statistically different from zero (p-values were all larger than 0.123). Table~\ref{tab:lmrmse} summarizes the prediction errors for Models 1-4.\\
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Model & RMSE \\
+\hline
+1 & 20.3269 \\
+\hline
+2 & 16.0476 \\
+\hline
+3 & 23.7820 \\
+\hline
+4 & 20.7748 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:lmrmse} \textbf{Table summarizing the root mean squared error for four of the linear models.}}
+\end{table}
+
+We can see that the best performing model, of the four, is Model 2, followed by Model 1. Interestingly enough, their counterparts with the categorical variable game result have less predictive ability as their RMSEs are higher. Now, let's look at Model 5. After fitting the linear model with all of the interactions, Table~\ref{tab:mod5sum} provides a helpful summary of the estimated coefficients and the associated p-values from the t-test on each coefficient.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{r|rrrr}
+  \hline
+  \hline
+(Intercept) & 10.01 & 2.47 & 4.05 & 0.00 \\ 
+  compp & 71.91 & 3.78 & 19.01 & 0.00 \\ 
+  yds & 0.06 & 0.01 & 10.94 & 0.00 \\ 
+  td & 5.25 & 0.53 & 9.95 & 0.00 \\ 
+  int & -10.54 & 0.72 & -14.55 & 0.00 \\ 
+  sack & -4.70 & 0.38 & -12.36 & 0.00 \\ 
+  fum & -11.11 & 1.82 & -6.10 & 0.00 \\ 
+  td:int & 0.47 & 0.30 & 1.57 & 0.12 \\ 
+  td:sack & 0.03 & 0.19 & 0.14 & 0.89 \\ 
+  td:fum & -0.40 & 0.65 & -0.60 & 0.55 \\ 
+  int:sack & 0.60 & 0.20 & 2.96 & 0.00 \\ 
+  int:fum & 2.45 & 0.74 & 3.31 & 0.00 \\ 
+  sack:fum & 1.28 & 0.40 & 3.17 & 0.00 \\ 
+   \hline
+  \end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:mod5sum} \textbf{Summary output for the linear model fit with the six interactions.}}
+\end{table}
+
+NEED TO TALK TO MARK ABOUT DROPPING LARGE P-VALUE TERMS.\\
 
 \subsection{Bagging}
+Linear models on their own do not have the best predictive ability as we have seen. One method to help any model's ability to accurately predict is bootstrap aggregation, or bagging.\\
 
 \subsection{Summary}
 
@@ -143,23 +257,6 @@ We will start with the most simple of the methods we are considering, the linear
 %referencing tables and firgures:
 %Table~\ref{tab:widgets} <-need to include \label in \caption
 %Figure~\ref{fig:frog} <-also include \label in \caption
-
-% Commands to include a figure:
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{frog.jpg}
-\caption{\label{fig:frog}This is a figure caption.}
-\end{figure}
-
-\begin{table}
-\centering
-\begin{tabular}{l|r}
-Item & Quantity \\\hline
-Widgets & 42 \\
-Gadgets & 13
-\end{tabular}
-\caption{\label{tab:widgets}An example table.}
-\end{table}
 
 %Citing Sources:
 Blablabla said Nobody \cite{qbr1}. Also \cite{qbr2}, and \cite{lm}, and \cite{bag} and \cite{gam}.\\
