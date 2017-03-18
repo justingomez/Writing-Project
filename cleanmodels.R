@@ -61,13 +61,238 @@ lm.rmse5<-sqrt((sum(predict(lm5,newdata=test)-test$qbr)^2)/nrow(test))
 #lm.rmsethis<-sqrt((sum(predict(lmthis,newdata=test)-test$qbr)^2)/nrow(test))
 
 
+#bagged lms
+n<-1000
+#mod1
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[these,]
+  lm.boot<-lm(mod1,data=boot)
+  boot.pred[,i]<-predict(lm.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse1<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod2
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141994)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[these,]
+  lm.boot<-lm(mod2,data=boot)
+  boot.pred[,i]<-predict(lm.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse2<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod3
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141995)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+  boot<-train[c(these,2463),]
+  boot$result<-factor(boot$result,levels=c("T","L","W"))
+  lm.boot<-lm(mod3,data=boot)
+  boot.pred[,i]<-predict(lm.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse3<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod4
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141996)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[c(these,2463),]
+  boot$result<-factor(boot$result,levels=c("T","L","W"))
+  lm.boot<-lm(mod4,data=boot)
+  boot.pred[,i]<-predict(lm.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse4<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod5
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141997)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[these,]
+  lm.boot<-lm(mod5,data=boot)
+  boot.pred[,i]<-predict(lm.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse5<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
 
 
+#gams
+gam1<-gam(qbr~s(compp,k=10,bs="ts")+s(att,k=15,bs="ts")+
+            s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+s(int,k=3,bs="ts")+
+            s(sack,k=3,bs="ts")+fum,data=train)
+gam2<-gam(qbr~result+s(compp,k=10,bs="ts")+s(att,k=15,bs="ts")+
+            s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+s(int,k=3,bs="ts")+
+            s(sack,k=3,bs="ts")+fum,data=train)
+#plot(gam1,pages=2,scale=0)
+#summary(gam1)
+#gam.check(gam1)
+#plot(gam2,pages=2,scale=0)
+#summary(gam2)
+#gam.check(gam2)
 
+gam.rmse1<-sqrt((sum(predict(gam1,newdata=test)-test$qbr)^2)/nrow(test))
+gam.rmse2<-sqrt((sum(predict(gam2,newdata=test)-test$qbr)^2)/nrow(test))
 
+#bagged gams
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141997)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[these,]
+  gam.boot<-gam(qbr~s(compp,k=10,bs="ts")+s(att,k=15,bs="ts")+
+                 s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+s(int,k=3,bs="ts")+
+                 s(sack,k=3,bs="ts")+fum,data=boot)
+  boot.pred[,i]<-predict(gam.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+gam.boot.rmse1<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
 
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141994)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+  boot<-train[c(these,2463),]
+  boot$result<-factor(boot$result,levels=c("T","L","W"))
+  gam.boot<-gam(qbr~result+s(compp,k=10,bs="ts")+s(att,k=15,bs="ts")+
+                 s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+s(int,k=3,bs="ts")+
+                 s(sack,k=3,bs="ts")+fum,data=boot)
+  boot.pred[,i]<-predict(gam.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+gam.boot.rmse2<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
 
+#trees
+tree1<-rpart(mod1,data=train,maxdepth=5)
+tree2<-rpart(mod2,data=train,maxdepth=5)
+tree3<-rpart(mod3,data=train,maxdepth=5)
+tree4<-rpart(mod4,data=train,maxdepth=5)
 
+plot(tree1,uniform=TRUE,margin=.1,main="Regression Tree for Model 1")
+text(tree1,cex=.9)
+
+tree.rmse1<-sqrt((sum(predict(tree1,newdata=test)-test$qbr)^2)/nrow(test))
+tree.rmse2<-sqrt((sum(predict(tree2,newdata=test)-test$qbr)^2)/nrow(test))
+tree.rmse3<-sqrt((sum(predict(tree3,newdata=test)-test$qbr)^2)/nrow(test))
+tree.rmse4<-sqrt((sum(predict(tree4,newdata=test)-test$qbr)^2)/nrow(test))
+
+#boosting
+set.seed(4141993)
+gbm1<-gbm(mod1,data=train,distribution="gaussian",n.trees=1000,interaction.depth=5
+          ,shrinkage=.01)
+gbm2<-gbm(mod2,data=train,distribution="gaussian",n.trees=1000,interaction.depth=5
+          ,shrinkage=.01)
+gbm3<-gbm(mod3,data=train,distribution="gaussian",n.trees=1000,interaction.depth=5
+          ,shrinkage=.01)
+gbm4<-gbm(mod4,data=train,distribution="gaussian",n.trees=1000,interaction.depth=5
+          ,shrinkage=.01)
+
+gbm.rmse1<-sqrt((sum(predict(gbm1,newdata=test,n.trees=1000,type="response")
+                     -test$qbr)^2)/nrow(test))
+gbm.rmse2<-sqrt((sum(predict(gbm2,newdata=test,n.trees=1000,type="response")
+                     -test$qbr)^2)/nrow(test))
+gbm.rmse3<-sqrt((sum(predict(gbm3,newdata=test,n.trees=1000,type="response")
+                     -test$qbr)^2)/nrow(test))
+gbm.rmse4<-sqrt((sum(predict(gbm4,newdata=test,n.trees=1000,type="response")
+                     -test$qbr)^2)/nrow(test))
+
+#bagging
+#mod1
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[these,]
+  tree.boot<-rpart(mod1,data=boot,maxdepth=5)
+  boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse1<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod2
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141994)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[these,]
+  tree.boot<-rpart(mod2,data=boot,maxdepth=5)
+  boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse2<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod3
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141995)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[c(these,2463),]
+  boot$result<-factor(boot$result,levels=c("T","L","W"))
+  tree.boot<-rpart(mod3,data=boot,maxdepth=5)
+  boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse3<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+#mod4
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141996)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train),replace=TRUE)
+  boot<-train[c(these,2463),]
+  boot$result<-factor(boot$result,levels=c("T","L","W"))
+  tree.boot<-rpart(mod4,data=boot,maxdepth=5)
+  boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse4<-sqrt((sum(mean.pred-test$qbr)^2)/nrow(test))
+
+#random forests
+set.seed(4141993)
+forest1<-randomForest(mod1,data=train,ntree=1000)
+forest2<-randomForest(mod2,data=train,ntree=1000)
+forest3<-randomForest(mod3,data=train,ntree=1000)
+forest4<-randomForest(mod4,data=train,ntree=1000)
+
+forest.rmse1<-sqrt((sum(predict(forest1,newdata=test)-test$qbr)^2)/nrow(test))
+forest.rmse2<-sqrt((sum(predict(forest2,newdata=test)-test$qbr)^2)/nrow(test))
+forest.rmse3<-sqrt((sum(predict(forest3,newdata=test)-test$qbr)^2)/nrow(test))
+forest.rmse4<-sqrt((sum(predict(forest4,newdata=test)-test$qbr)^2)/nrow(test))
 
 
 

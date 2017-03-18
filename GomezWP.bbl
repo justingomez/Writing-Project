@@ -40,4 +40,9 @@
   \url{http://www.espn.com/nfl/story/_/id/6833215/explaining-statistics-total-quarterback-rating},
   2011.
 
+\bibitem{partspace}
+{\sc Shalizi, C.}
+\newblock Lecture 10: {R}egression {T}rees.
+\newblock \url{http://www.stat.cmu.edu/~cshalizi/350-2006/lecture-10.pdf}.
+
 \end{thebibliography}

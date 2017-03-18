@@ -113,7 +113,7 @@ Many of the relationships that we see are not surprising, such as the strong pos
 
 The relationships between the variables and completion percentage (compp in the figure) aren't altogether unexpected. With all of this information, let's build a few candidate models. Naturally, for all of these models total QBR is the response variable. The first model we will consider contains only the quantitative variables. This model contains the seven variables that are typically the most important summaries of a quarterback's game, and examining them often gives a good picture of how the quarterback performed. The second model that we will consider also contains the quantitative variables, but rather than having the number of attempts and completions, we will substitute completion percentage. For our third and fourth models, we will add our only categorical variable, outcome of the game, to model one and model two, and look for improvements to predictive ability. The final model we will examine is a model with interactions between all unique pairwise combinations of touchdowns, interceptions, sacks, and fumbles. That gives us six interaction terms, for which we will also have the four main effects, and the main effects for yards and completion percentage. Using these different combinations of variables will act as our tuning step when we begin fitting our models according to the various methods. Table~\ref{tab:models} summarizes the variables that are going into each model.\\
 
-\begin{table}
+\begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
@@ -161,24 +161,24 @@ Now that we have an understanding for how linear models are fit, let's start our
 This model accounts for about 58\% of the variation in the data, not a bad start, but we would like to improve upon this number. With the fitted model, we can obtain predictions for our testing data set. These predictions are obtained by substituting the values of the predictor variables into the fitted equation, yielding an estimated total QBR for those game stats. We will do this for all fifteen hundred and seventy-three games in the testing data set. Then, we will compare our predicted values to the actual values from the collected data to obtain a single value quantifying the prediction error of our model. Root mean squared error (RMSE), as defined in Equation~\ref{eq:rmse}, will be used to compare the models and assess overall ability.\\
 
 \begin{equation} \label{eq:rmse}
-\sqrt{\frac{\sum_{i=1}^{n}(\hat{y}-y)^{2}}{n}}
+\sqrt{\frac{\sum_{i=1}^{n}(\hat{y}_{i}-y_{i})^{2}}{n}}
 \end{equation}
 
 With this equation, the RMSE for Model 1 is 20.3269. Recall that total QBR ranges from zero to one hundred, so the RMSE for this model is rather high. We can continue on, fitting linear models with our other combinations of predictors and obtaining RMSEs for those models as well. In this model fitting process, it should be noted that Model 3 and 4, the models with the categorical variable for win/loss/tie, indicated that the associated coefficients for this variable were not statistically different from zero (p-values were all larger than 0.123). Table~\ref{tab:lmrmse} summarizes the prediction errors for Models 1-4.\\
 
-\begin{table}
+\begin{table}[h]
 \centering
-\begin{tabular}{|c|c|}
+\begin{tabular}{|c|c|c|}
 \hline
-Model & RMSE \\
+Model & Variance Explained & RMSE \\
 \hline
-1 & 20.3269 \\
+1 & 58.25\% & 20.3269 \\
 \hline
-2 & 16.0476 \\
+2 & 58.24\% & 16.0476 \\
 \hline
-3 & 23.7820 \\
+3 & 59.49\% & 23.7820 \\
 \hline
-4 & 20.7748 \\
+4 & 59.80\% & 20.7748 \\
 \hline
 \end{tabular}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
@@ -189,8 +189,10 @@ We can see that the best performing model, of the four, is Model 2, followed by 
 
 \begin{table}[h]
 \centering
-\begin{tabular}{r|rrrr}
+\begin{tabular}{r|cccc}
   \hline
+  \hline
+  Variable & Estimate & Std. Error & t-value & p-value \\
   \hline
 (Intercept) & 10.01 & 2.47 & 4.05 & 0.00 \\ 
   compp & 71.91 & 3.78 & 19.01 & 0.00 \\ 
@@ -214,40 +216,160 @@ We can see that the best performing model, of the four, is Model 2, followed by 
 NEED TO TALK TO MARK ABOUT DROPPING LARGE P-VALUE TERMS.\\
 
 \subsection{Bagging}
-Linear models on their own do not have the best predictive ability as we have seen. One method to help any model's ability to accurately predict is bootstrap aggregation, or bagging.\\
+Linear models on their own do not have the best predictive ability as we have seen. One method to help any model's ability to accurately predict is bootstrap aggregation, or bagging. Bagging is a great way to reduce the variance of the predictions that we obtain from our models, thus giving more stable predicted values. To apply this method on our models, we will first must obtain a bootstrap sample of our training data. A bootstrap sample is a sample of the same size as the original, and is obtained by sampling observations from the original sample with replacement. This generates a sample that may contain the same point several times and others not at all. The desired model is then fit on the bootstrapped data and predictions are obtained like normal. This process of obtaining a bootstrapping, fitting a model, and obtaining predictions is repeated as many times as desired, usually a large number, and for our study, we will use one thousand iterations. After the thousand sets of predictions are obtained, we aggregate them to obtain a single set of predictions, which can be performed by simply averaging the predictions together. Then RMSE can be found for this aggregate set of predictions. It should be noted that bagging is not always going to improve a model's prediction accuracy, especially for linear models as they are already have relatively low variance \cite{bag}. Any changes that we see are likely to be small, but this technique is introduced here as it is relatively simple to implement with linear models, and may allow for a comparison when we apply bagging to other models. Table~\ref{tab:baggedlm} summarizes the results of bagging our linear models.\\
 
-\subsection{Summary}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+Model & RMSE (unbagged) & RMSE (bagged) & Difference (unbagged-bagged)\\
+\hline
+1 & 20.3269 & 20.1851 & 0.1418\\
+\hline
+2 & 16.0476 & 16.7029 & -0.6553\\
+\hline
+3 & 23.7820 & 22.7537 & 1.0283\\
+\hline
+4 & 20.7748 & 20.5284 & 0.2464\\
+\hline
+5 & 11.1739 & 10.8368 & 0.3371\\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:baggedlm} \textbf{Root mean squared error after bagging our previously fitted linear models. Comparison to unbagged RMSE also provided.}}
+\end{table}
+
+We can see that bagging helped all of our models except for Model 2. Again, all of these effects are relatively small.\\
 
 \section{Generalized Additive Models}
+Linear models were a good place to start our predicting process as they are a relatively simple tool that gives us a starting point to improve from. Increasing the complexity of our modeling methods slightly, let's now take a look at generalized additive models.\\
 
 \subsection{Explanation and Motivation}
 
 \subsection{Performance}
 
-\subsection{Bagging?}
-
-\subsection{Summary}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+Model & RMSE (unbagged) & RMSE (bagged) & Difference (unbagged-bagged)\\
+\hline
+2 & 17.7161 & 18.0815 & -0.3654 \\
+\hline
+4 & 21.3546 & 21.8344 & -0.4798 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:baggedgam} \textbf{Root mean squared error for unbagged and bagged GAMs.}}
+\end{table}
 
 \section{Regression Trees}
+We've seen that linear and non-linear models aren't performing extraordinarily well. Perhaps more sophisticated methods are necessary to truly get at how ESPN is generating their total QBR. Classification and regression trees (CART) are perhaps one of the most powerful methods that can be employed with relatively high success.\\
 
 \subsection{Explanation and Motivation}
+There are two types of trees that can be used to model a process: classification and regression trees. Classification trees are reserved for categorical response variables and regression trees are for quantitative response variables, thus we will be building regression trees in our analyses. The primary goal of a tree is partitioning the data set up into uniform sets on the response variable, or at least as uniform as possible. This is done by looking at the data as a whole, and deciding which variable should be split on first, and where that split should be made. This decision is made such that the observations within each subset have similar total quarterback ratings. Each subset is then examined, and a variable is again chosen to be split on, making these subsets even more similar on total QBR. This splitting process is repeated until making further splits will no longer greatly improve the uniformity of the subgroups. Terminal subgroups, the ones on which further splits are no longer made, are called leaves. Predictions are then generated for each leaf in the tree. This process generates a kind of flow chart, sorting future observations into subgroups and giving a predicted total quarterback rating to these future observations \cite{gam}. Figure~\ref{fig:part} and Figure~\ref{fig:ex} give an example of a partitioned predictor space, as well as the resulting regression tree.\\
 
-\subsection{Performance}
-
-\subsection{Boosting?}
-
-\subsection{Summary}
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{partspace.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:part} \textbf{Example of a partitioned predictor space with explanatory variables wheelbase and horsepower on the response variable price. Partitions, or splits, are shown as red lines, with the predicted price for each partition also shown in red \cite{partspace}.}}
+\end{figure}
 
 \newpage
-\section{Random Forests}
-
-\subsection{Explanation and Motivation}
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{extree.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:ex} \textbf{Resulting classification tree from the previously pictured partitioning. Simply another way to visualize that regression tree \cite{partspace}.}}
+\end{figure}
 
 \subsection{Performance}
+When fitting these tree based models, we will be able to specifically assess the fits for Models 1-4, but not for Model 5 as it contains interaction terms. When fitting trees, we don't need to specify interactions in our model, they will be included in the fit if appropriate due to the nature of the tree fitting algorithm. Let's examine the results for Model 1. Figure~\ref{fig:tree1} displays the fitted regression tree for the quantitative data.\\
 
-\subsection{Boosting?}
+\newpage
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{tree1.jpeg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:tree1} \textbf{Resulting classification tree for Model 1.}}
+\end{figure}
 
-\subsection{Summary}
+This regression tree allows for nine different predictions to be made as we filter new observations through the splits. Is this enough? Calculating RMSE as we did for the other models yields a value of 23.4448. This is quite a bit higher than the RMSE for the linear model with this combination of variables! Let's fit the rest of the models and examine the associated RMSEs in Table~\ref{tab:treermse}.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Model & RMSE \\
+\hline
+1 & 23.4448 \\
+\hline
+2 & 12.1681 \\
+\hline
+3 & 31.5897 \\
+\hline
+4 & 28.2306 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:treermse} \textbf{Root mean squared error for all four combinations of variables.}}
+\end{table}
+
+The majority of the RMSEs for these trees are larger than their linear  model counterparts. The only one that is lower is the model with completion percentage rather than number of completions and number of attempts. The only consistent result is that this combination of explanatory variables is the best in terms of minimizing RMSE. Does this mean that trees are a failure? Not necessarily. Let's take a look at improving these models through our familiar process of bagging, and a new process called boosting.\\
+
+\subsection{Boosting}
+Where bagging is performed as an independent process, one fitted tree does not depend on the results of any other fitted tree, boosting is a dependent process in that the models are fit sequentially, and the resulting fit from one depends directly on the fit from the model that came before it. To start, we fit a tree like we would normally using the full training set. Then, we obtain the residuals from the model, and fit a tree on these residuals. We continue on in this fashion, slowly growing trees and improving our model's prediction power. When fitting these boosted models, there are three things to choose: the number of trees to grow, the shrinkage parameter, and the maximum depth of the tree. The number of trees that we want to grow in our boosting procedure is important as we do not want to cut off the learning procedure too early and end up with a partially boosted model that might not fit as well as it could. The shrinkage parameter helps control how quickly, or slowly, the models learn. Typically, we want the models in this method to grow slowly to avoid over-fitting, so a shrinkage parameter of 0.01 or 0.001 are most often used. The last piece to control in this method is the maximum depth of the tree. This translates to the number of splits that we will have in our tree. A large number of splits, or a deep tree, typically leads to over-fitting, so some thought should be given to this parameter selection \cite{bag}. For our study, we will fit one thousand trees with a shrinkage parameter of 0.01, and a maximum depth of five splits. Table~\ref{tab:treeboost} summarizes the results of boosting the previously fit trees, as well as the results of bagging the same trees.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+Model & Original & Bagged & Boosted \\
+\hline
+1 & 23.4448 & 17.6224 & 13.9772 \\
+\hline
+2 & 12.1681 & 9.8747 & 10.1911 \\
+\hline
+3 & 31.5897 & 30.0059 & 18.6352 \\
+\hline
+4 & 28.2306 & 21.0024 & 14.7351 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:treeboost} \textbf{Predictive ability of the bagged and boosted trees, compared to the original trees.}}
+\end{table}
+
+While bagging helps our trees' predictive power, boosting helps them out even more.\\
+
+\section{Random Forests}
+The final method we will consider is the most powerful one. Random forests are commonly turned to for quick and reliable predictions and are often regarded as the golden standard of prediction.\\
+
+\subsection{Explanation and Motivation}
+Consider the process of bagging that we have been using. We obtain bootstrap samples as many times as desired, and then fit a tree to each bootstrap sample, each with the same methodology. While our bootstrap samples can be relatively different, since we are fitting the trees in the same ways, our resulting trees will be relatively similar. Random forests have the advantage of generating many trees that differ from each other, resulting in more powerful predictions once they are aggregated. To do this, random forests develop trees in a slightly different way than our regular tree fitting process. Normally, we consider all of the variables when making a split and choose the best one, and if there is an especially powerful explanatory variable, this will usually be the one the split is made on. This is what leads to relatively little difference in bagged trees. Random forests however only consider a random sample of predictors at each split, typically the number of parameters divided by three (rounded down if necessary). This yields many different looking trees, and when we average over all of them we see a larger reduction of variance than with regular bagging methods \cite{gam}.\\
+
+\subsection{Performance}
+Let's see how applying this new methodology affects RMSE for our four models without interactions. There aren't many tuning parameters to consider when fitting random forests. We will use a thousand trees in each random forest and the standard cutoff of the number of explanatory variables divided by three when randomly sampling parameters at each split. Table~\ref{tab:rforest} gives the results of fitting these random forests.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Model & RMSE\\
+1 & 6.0436 \\
+\hline
+2 & 1.5701 \\
+\hline
+3 & 15.9485 \\
+\hline
+4 & 8.3663 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:rforest} \textbf{RMSE for random forest models.}}
+\end{table}
+
+These random forests perform extremely well, much better than anything else we have tried in general. As usual, Model 2 with completion percentage out performs the other models.\\
 
 \section{Conclusion}
 
