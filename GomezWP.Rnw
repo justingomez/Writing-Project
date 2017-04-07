@@ -6,6 +6,7 @@
 \usepackage{cite}
 \usepackage{url}
 \usepackage{caption}
+\usepackage{setspace}
 
 \begin{document}
 
@@ -69,8 +70,10 @@ Dr. Mark \textsc{Greenwood} % Supervisor's Name
 
 
 \begin{abstract}
-junk.
+Coming soon...
 \end{abstract}
+
+\doublespacing
 
 \section{Introduction}
 
