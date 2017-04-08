@@ -38,12 +38,12 @@ mod5<-qbr~compp+fum+int+sack+td+yds+result+sack:result+sack:td+sack:int
 mod6<-qbr~compp+fum+int+sack+td+yds+result+yds:td+yds:int+yds:fum
 
 #six models we will use
-mod1<-qbr~compp+fum+int+result+sack+td+yds
-mod2<-qbr~compp+fum+int+sack+td+yds
-mod3<-qbr~compp+int+sack+td+yds
-mod4<-qbr~compp+fum+int+result+sack+td+yds+compp*sack+fum*int+fum*sack+int*sack+sack*yds+td*yds
-mod5<-qbr~compp+fum+int+result+sack+td+yds+fum*result+fum*int+fum*sack+int*sack+td*yds
-mod6<-qbr~compp+fum+int+result+sack+td+yds+compp*yds+fum*int+fum*sack+sack*yds+td*yds
+#mod1<-qbr~compp+fum+int+result+sack+td+yds
+#mod2<-qbr~compp+fum+int+sack+td+yds
+#mod3<-qbr~compp+int+sack+td+yds
+#mod4<-qbr~compp+fum+int+result+sack+td+yds+compp*sack+fum*int+fum*sack+int*sack+sack*yds+td*yds
+#mod5<-qbr~compp+fum+int+result+sack+td+yds+fum*result+fum*int+fum*sack+int*sack+td*yds
+#mod6<-qbr~compp+fum+int+result+sack+td+yds+compp*yds+fum*int+fum*sack+sack*yds+td*yds
 
 
 
@@ -154,7 +154,7 @@ for(i in 1:nrow(test)){
 boot.rmse5<-rmse(mean.pred)
 #mod6
 boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
-set.seed(4141997)
+set.seed(4141998)
 for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
@@ -177,14 +177,14 @@ gam3<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
             s(int,k=3,bs="ts"),data=train)
 
 #gam rmse
-gam.rmse1<-rmse(predict(gam1,newdata=test),type="response")
-gam.rmse2<-rmse(predict(gam2,newdata=test),type="response")
-gam.rmse3<-rmse(predict(gam3,newdata=test),type="response")
+gam.rmse1<-rmse(predict(gam1,newdata=test,type="response"))
+gam.rmse2<-rmse(predict(gam2,newdata=test,type="response"))
+gam.rmse3<-rmse(predict(gam3,newdata=test,type="response"))
 
 #bagged gam
 #gam1
 boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
-set.seed(4141997)
+set.seed(4141993)
 for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
@@ -200,7 +200,7 @@ for(i in 1:nrow(test)){
 gam.boot.rmse1<-rmse(mean.pred)
 #gam2
 boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
-set.seed(4141997)
+set.seed(4141994)
 for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
@@ -216,7 +216,7 @@ for(i in 1:nrow(test)){
 gam.boot.rmse2<-rmse(mean.pred)
 #gam3
 boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
-set.seed(4141997)
+set.seed(4141995)
 for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
@@ -243,9 +243,9 @@ plotcp(tree3)
 tree3.prune<-prune(tree3,cp=0.0172)
 
 #pruned trees rmse
-tree.rmse1<-rmse(predict(tree1.prune,newdata=test),type="response")
-tree.rmse2<-rmse(predict(tree2.prune,newdata=test),type="response")
-tree.rmse3<-rmse(predict(tree3.prune,newdata=test),type="response")
+tree.rmse1<-rmse(predict(tree1.prune,newdata=test))
+tree.rmse2<-rmse(predict(tree2.prune,newdata=test))
+tree.rmse3<-rmse(predict(tree3.prune,newdata=test))
 
 #tree visualization
 fancyRpartPlot(tree1.prune)
@@ -326,9 +326,9 @@ forest2<-randomForest(mod2,data=train,ntree=1000,importance=TRUE)
 set.seed(4141995)
 forest3<-randomForest(mod3,data=train,ntree=1000,importance=TRUE)
 
-forest.rmse1<-rmse(predict(forest1,newdata=test),type="response")
-forest.rmse2<-rmse(predict(forest2,newdata=test),type="response")
-forest.rmse3<-rmse(predict(forest3,newdata=test),type="response")
+forest.rmse1<-rmse(predict(forest1,newdata=test,type="response"))
+forest.rmse2<-rmse(predict(forest2,newdata=test,type="response"))
+forest.rmse3<-rmse(predict(forest3,newdata=test,type="response"))
 
 #variable importance (forest)
 varImpPlot(forest1)
