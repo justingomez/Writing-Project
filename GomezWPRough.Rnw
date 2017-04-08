@@ -1,0 +1,221 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{caption}
+\usepackage{setspace}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%   HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Montana State University}\\[1.5cm] % Name of your university/college
+\textsc{\Large Department of Mathematical Sciences}\\[0.5cm] % Major heading such as course name
+\textsc{\large Writing Project}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%   TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Investigation of ESPN's Total QBR}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%   AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Justin \textsc{Gomez} % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr. Mark \textsc{Greenwood} % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[2cm]
+
+%----------------------------------------------------------------------------------------
+%   DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large April 14, 2017}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%   LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\includegraphics[width=5cm]{MSU-vert.png} % Include a department/university logo - this will require the graphicx package
+ 
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+
+\begin{abstract}
+Coming soon...
+\end{abstract}
+
+\doublespacing
+
+\section{Introduction}
+
+In American Football, the success of a team can often be attributed to two things: the quarterback and the defense. A team without at least a great quarterback or a solid defense cannot win often, and they definitely cannot make their way to the Super Bowl to compete for the sports biggest title. It we take a closer look at these two keys to success we will notice a huge difference other than the side of the ball they play on. The defense is a team of about twenty-six players on the fifty-three man roster, with around twenty-two dressing out for any given game \cite{anat}. That's a lot of players working together to stop an offence, and while a defense's success can be boiled down to a few key players, it takes everyone doing their job to be successful play after play. On the other side, however, is the quarterback. Just a single person, coordinating the offense on the field and doing his best to lead his team to victory. While there are also about twenty-one \cite{anat} other offensive players on the active game day roster, and their contributions are important, a team cannot move the football down the field and score without a good leader. The quarterback is responsible for so much in a game: communicating plays to teammates, reading the defense, re-positioning offensive players, watching the play clock, handling the snap, and executing the play. And those are just the basics. Quarterbacks have become so valuable to teams, that not only have their salaries seen a great bump as the passing game become more prominent, but so have the salaries of those that are tasked with protecting the quarterback and those that are trying to get to him. Figure~\ref{fig:sal} shows average salaries for current players in the NFL by position.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.2\textwidth]{salary.jpeg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:sal} \textbf{Average salary for current NFL players by position. Data acquired from \url{http://www.spotrac.com/nfl/contracts/}}}
+\end{figure}
+
+\newpage
+We can see that quarterbacks are paid head and shoulders above most of the league. The next highest mean salary is the left tackle. This player is responsible for protecting the quarterback, typically more so than the right tackle or any other lineman. Good left tackles keep quarterbacks from taking heavy hits, and are thus valued highly. The final feature to point out in this plot is the average salary of defensive ends, fourth on the list. These players are the ones responsible for putting the pressure on quarterbacks, and disrupting a quarterback's game often results in a loss for that quarterback. With so much of the game and its mechanics revolving around this one player, it makes sense that analysts would be interested in a summary measure that would convey how well a quarterback performed during the game. The NFL has its own measure called passer rating, which ranges from 0 to 158.3. For a long time this was the measure that was used to compare quarterbacks. However, there are several drawbacks to this statistic. While the NFL clearly defines how their measure is calculated \cite{passer}, the scale is somewhat difficult to interpret as it is not a natural range of values. Perhaps the biggest drawback however, comes from the statistic's purpose. Passer rating is only meant to describe how well a quarterback passed in a game, and it leaves out all of the other things that the quarterback does in any given play. Passer rating uses only completion percentage, average yards gained per pass attempt, percentage of touchdown passes per pass attempt, and percentage of interceptions per pass attempt, all of which are important, but we are still missing some important information such as rushing yards and touchdowns, both of which are much more common to see from today's quarterbacks. In an attempt to improve upon the NFL's passer rating, ESPN developed their own statistic: total quarterback rating (QBR). This measure is much more complicated, and involves taking a closer look at each play the quarterback is involved in.\\
+
+\subsection{Total Quarterback Rating}
+Let's take a look at how EPSN's QBR tries to better capture the performance of a quarterback. Their model has four major components: win probability, expected points, division of credit, and a ``clutch" index. The win probability comes from a complex analysis of hundreds of past games which were used to develop a win probability function which accounts for a myriad of factors such as field position, time left on the game clock, down, whether a team has home field advantage, etc. Expected points then look at how many points the quarterback's team is expected to gain on any given drive. Starting from your own ten yard line is expected to gain fewer points than starting from the opponent's forty yard line. This is where the performance of the quarterback, in terms of passing yards, rushing yards, etc., comes into the model. However, ESPN realizes that the result of every play is not solely because of the quarterback, and so they also build a division of credit aspect into their model. This aspect accounts for the plays where the quarterback makes a lousy throw and the receiver is forced to make a great catch to extend the play. This also accounts for the quarterback making an excellent throw and the receiver dropping the ball. The final piece of the model, the ``clutch" index, analyzes each play and determines how important that play was to the outcome of the game. Throwing for a first down on a fourth down with ten yards to go in the final minutes of a tied game will have a higher rating on the clutch index than a similar play when the score is thirty-five to three. All of these pieces combined, and scaled to be between zero and one hundred, yield the total quarterback rating. According to Dean Oliver from ESPN, calculating this summary statistic requires thousands of lines of code \cite{qbr1}, and given all of the factors that are taken into account play-by-play, one can see why. But is all of this work truly necessary? Can we come up with the same total quarterback ratings with a more simple model?\\
+
+\subsection{Study Design}
+To answer this question, we need as much data on the quarterback as we can collect. Matching the amount of information that goes into QBR will be near impossible, but we can still collect the important information that helps summarize how well a quarterback performed. When ESPN came out with QBR in 2011, they went ahead and calculated QBR for quarterbacks all the way back to the 2006 season. We will thus gather information on all of the quarterbacks that played for at least twenty action plays (the minimum requirement for QBR to have been calculated). In our data set we have the following game statistics: number of completions, number of attempts, total yards gained, total number of touchdowns scored, number of interceptions thrown, number of sacks taken, number of fumbles by the quarterback, and the end result of the game (win, loss, tie). Once all of the data have been collected, we end up with five thousand fifty-eight games to work with (after dropping those that had incomplete data, which did not appear to be systematic). Our goal here is prediction: we want to predict total QBR with the data we collected. As is often the case with prediction, we would like to know our models' predictive ability. To obtain this measure, we will split our data into three pieces: a ``training" set that will be used to build our models and will account for about 50\% of our full data set, a ``testing" set that will be used to assess the predictive ability of our models and will account for about 30\% of our full data set, and finally a ``validation" set that will be used only once on the model we choose as our best model to gain a final score and will account for the remaining 20\% of our full data set. The testing data set will be used to tune our models, so it will potentially be tested on several times for each approach we take. Once the best model is selected, the validation set will be used once, and will tell us how well our tuned model performs, and further tuning will not be done. To obtain each of these data sets, we will take a stratified random sample of two hundred and thirty-nine games from each season to control for any changes that may have been made to the QBR formula over time. This creates the training set. To create the testing set, we will take the remaining data and obtain a stratified random sample of one hundred and forty-three games from each season. The remaining data will the create the validation set. To develop our predictions, we will look at four methods: linear models, generalized additive models, regression trees, and random forests.\\
+
+\section{Methods}
+Before we start fitting models, we should make sure we have an understanding of the four methods we will be using. Knowing how models these methods work will give insight into the motivation behind using each, and what we hope to accomplish with each method. We will also discuss some methods to improve upon the base model fits for some of these methods.\\
+
+\subsection{Linear Models}
+We will start with the most simple of the methods we are considering, the linear model. While not often used for prediction but rather more commonly used for inference, we can learn a great deal about how our collected data play into determining total QBR. We will also learn a great deal about ESPN's algorithim if we are able to successfully fit a linear model that generates accurate predictions.\\
+
+\subsubsection{Explanation}
+Perhaps the most commonly used statistical tool, the linear model can be used in a variety of situations and can give us a great deal of information. We will be using multiple linear regression to estimate our linear models as we have a single explanatory variable and a suite of predictor variables, which we will discuss in more detail later. For now, we will discuss this method in general terms. Equation~\ref{eq:lm} summarizes the general form of these models.\\
+
+\begin{equation} \label{eq:lm}
+Y=X\beta+\epsilon
+\end{equation}
+
+
+\subsubsection{Bagging}
+Linear models on their own do not have the best predictive ability as we have seen. One method to help any model's ability to accurately predict is bootstrap aggregation, or bagging. Bagging is a great way to reduce the variance of the predictions that we obtain from our models, thus giving more stable predicted values. To apply this method on our models, we will first must obtain a bootstrap sample of our training data. A bootstrap sample is a sample of the same size as the original, and is obtained by sampling observations from the original sample with replacement. This generates a sample that may contain the same point several times and others not at all. The desired model is then fit on the bootstrapped data and predictions are obtained like normal. This process of obtaining a bootstrapping, fitting a model, and obtaining predictions is repeated as many times as desired, usually a large number, and for our study, we will use one thousand iterations. After the thousand sets of predictions are obtained, we aggregate them to obtain a single set of predictions, which can be performed by simply averaging the predictions together. Then RMSE can be found for this aggregate set of predictions. It should be noted that bagging is not always going to improve a model's prediction accuracy, especially for linear models as they are already have relatively low variance \cite{bag}. Any changes that we see are likely to be small, but this technique is introduced here as it is relatively simple to implement with linear models, and may allow for a comparison when we apply bagging to other models. Table~\ref{tab:baggedlm} summarizes the results of bagging our linear models.\\
+
+\subsection{Generalized Additive Models}
+Linear models were a good place to start our predicting process as they are a relatively simple tool that gives us a starting point to improve from. Increasing the complexity of our modeling methods slightly, let's now take a look at generalized additive models.\\
+
+\subsubsection{Explanation}
+
+\subsection{Regression Trees}
+We've seen that linear and non-linear models aren't performing extraordinarily well. Perhaps more sophisticated methods are necessary to truly get at how ESPN is generating their total QBR. Classification and regression trees (CART) are perhaps one of the most powerful methods that can be employed with relatively high success.\\
+
+\subsubsection{Explanation and Motivation}
+There are two types of trees that can be used to model a process: classification and regression trees. Classification trees are reserved for categorical response variables and regression trees are for quantitative response variables, thus we will be building regression trees in our analyses. The primary goal of a tree is partitioning the data set up into uniform sets on the response variable, or at least as uniform as possible. This is done by looking at the data as a whole, and deciding which variable should be split on first, and where that split should be made. This decision is made such that the observations within each subset have similar total quarterback ratings. Each subset is then examined, and a variable is again chosen to be split on, making these subsets even more similar on total QBR. This splitting process is repeated until making further splits will no longer greatly improve the uniformity of the subgroups. Terminal subgroups, the ones on which further splits are no longer made, are called leaves. Predictions are then generated for each leaf in the tree. This process generates a kind of flow chart, sorting future observations into subgroups and giving a predicted total quarterback rating to these future observations \cite{gam}. Figure~\ref{fig:part} and Figure~\ref{fig:ex} give an example of a partitioned predictor space, as well as the resulting regression tree.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{partspace.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:part} \textbf{Example of a partitioned predictor space with explanatory variables wheelbase and horsepower on the response variable price. Partitions, or splits, are shown as red lines, with the predicted price for each partition also shown in red \cite{partspace}.}}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{extree.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:ex} \textbf{Resulting classification tree from the previously pictured partitioning. Simply another way to visualize that regression tree \cite{partspace}.}}
+\end{figure}
+
+\subsubsection{Boosting}
+Where bagging is performed as an independent process, one fitted tree does not depend on the results of any other fitted tree, boosting is a dependent process in that the models are fit sequentially, and the resulting fit from one depends directly on the fit from the model that came before it. To start, we fit a tree like we would normally using the full training set. Then, we obtain the residuals from the model, and fit a tree on these residuals. We continue on in this fashion, slowly growing trees and improving our model's prediction power. When fitting these boosted models, there are three things to choose: the number of trees to grow, the shrinkage parameter, and the maximum depth of the tree. The number of trees that we want to grow in our boosting procedure is important as we do not want to cut off the learning procedure too early and end up with a partially boosted model that might not fit as well as it could. The shrinkage parameter helps control how quickly, or slowly, the models learn. Typically, we want the models in this method to grow slowly to avoid over-fitting, so a shrinkage parameter of 0.01 or 0.001 are most often used. The last piece to control in this method is the maximum depth of the tree. This translates to the number of splits that we will have in our tree. A large number of splits, or a deep tree, typically leads to over-fitting, so some thought should be given to this parameter selection \cite{bag}. For our study, we will fit one thousand trees with a shrinkage parameter of 0.01, and a maximum depth of five splits. Table~\ref{tab:treeboost} summarizes the results of boosting the previously fit trees, as well as the results of bagging the same trees.\\
+
+\subsection{Random Forests}
+The final method we will consider is the most powerful one. Random forests are commonly turned to for quick and reliable predictions and are often regarded as the golden standard of prediction.\\
+
+\subsubsection{Explanation}
+Consider the process of bagging that we have been using. We obtain bootstrap samples as many times as desired, and then fit a tree to each bootstrap sample, each with the same methodology. While our bootstrap samples can be relatively different, since we are fitting the trees in the same ways, our resulting trees will be relatively similar. Random forests have the advantage of generating many trees that differ from each other, resulting in more powerful predictions once they are aggregated. To do this, random forests develop trees in a slightly different way than our regular tree fitting process. Normally, we consider all of the variables when making a split and choose the best one, and if there is an especially powerful explanatory variable, this will usually be the one the split is made on. This is what leads to relatively little difference in bagged trees. Random forests however only consider a random sample of predictors at each split, typically the number of parameters divided by three (rounded down if necessary). This yields many different looking trees, and when we average over all of them we see a larger reduction of variance than with regular bagging methods \cite{gam}.\\
+
+\section{Fitted Models}
+Before we begin fitting models according to specific methods, let's discuss the models that we will consider fitting with the different methods. Our data set consists of twelve variables: the eight game statistics mentioned above as well as the resulting quarterback's total QBR, the season and the week the game occurred in, and the name of the quarterback. We are not interested in any specific quarterback nor are we interested in any effect time may have either at the season or week level, so these variables will not be used in any model we build. Figure~\ref{fig:corr} displays the correlation between our quantitative variables.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.2\textwidth]{correlation.jpeg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:corr} \textbf{Plot of the correlations between quantitative variables. Size and color of the squares indicate the strength and direction of the relationship. The lower diagonal also gives the correlation coefficients, rounded to two decimal places.}}
+\end{figure}
+
+Many of the relationships that we see are not surprising, such as the strong positive correlation between the number of completions and the number of attempts or the number of completions and the number of yards. We can also get an idea of each variable's relationship with QBR. Again, not many surprises here. We see positive relationships with completions, yards, and touchdowns, and negative relationships with interceptions, sacks, and fumbles. The only relationship that is a little surprising is the weak negative relationship between pass attempts and QBR, although this may be due to the fact that, in general, quarterbacks in losing situations make more passes. Perhaps a better way bring passing attempts and completions into the model would be as completion percentage, defined as the number of completions divided by the number of attempts. Figure~\ref{fig:corr2} displays the relationships between the variables with completion percentage rather than the two separate variables.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.2\textwidth]{correlation2.jpeg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:corr2} \textbf{Plot of the correlations between quantitative variables with completion percentage rather than number of completions and number of attempts.}}
+\end{figure}
+
+The relationships between the variables and completion percentage (compp in the figure) aren't altogether unexpected. With all of this information, let's build a few candidate models. Naturally, for all of these models total QBR is the response variable. The first model we will consider contains only the quantitative variables. This model contains the seven variables that are typically the most important summaries of a quarterback's game, and examining them often gives a good picture of how the quarterback performed. The second model that we will consider also contains the quantitative variables, but rather than having the number of attempts and completions, we will substitute completion percentage. For our third and fourth models, we will add our only categorical variable, outcome of the game, to model one and model two, and look for improvements to predictive ability. The final model we will examine is a model with interactions between all unique pairwise combinations of touchdowns, interceptions, sacks, and fumbles. That gives us six interaction terms, for which we will also have the four main effects, and the main effects for yards and completion percentage. Using these different combinations of variables will act as our tuning step when we begin fitting our models according to the various methods. Table~\ref{tab:models} summarizes the variables that are going into each model.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+Variables & Abbrev. & Model 1 & Model 2 & Model 3 & Model 4 & Model 5 \\
+\hline
+Completions & Comp & x & & x & & \\
+\hline
+Attempts & Att & x & & x & & \\
+\hline
+Completion Percent & Compp & & x & & x & x \\
+\hline
+Yards & Yds & x & x & x & x & x \\
+\hline
+Touchdowns & Td & x & x & x & x & x \\
+\hline
+Interceptions & Int & x & x & x & x & x \\
+\hline
+Sacks & S & x & x & x & x & x \\
+\hline
+Fumbles & F & x & x & x & x & x \\
+\hline
+Game Result & GR & & & x & x & \\
+\hline
+Interactions & & & & & & x \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:models} \textbf{Table summarizing the variables in each model.}}
+\end{table}
+
+\section{Results}
+
+\section{Conclusion}
+
+\subsection{Final Model Selection}
+
+
+%referencing tables and firgures:
+%Table~\ref{tab:widgets} <-need to include \label in \caption
+%Figure~\ref{fig:frog} <-also include \label in \caption
+
+%Citing Sources:
+Blablabla said Nobody \cite{qbr1}. Also \cite{qbr2}, and \cite{lm}, and \cite{bag} and \cite{gam}.\\
+
+\newpage
+\begin{flushleft}
+\bibliographystyle{acm}
+\bibliography{wp}
+\end{flushleft}
+\end{document}
+              
