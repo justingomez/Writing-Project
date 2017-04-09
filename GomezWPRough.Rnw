@@ -212,10 +212,35 @@ Game Result & GR & X & & & X & I & X\\
 \caption{\label{tab:models} \textbf{Table summarizing the variables in each model. `X' indicates the variable is included in that model and `I' indicates the variable is indcluded as part of an interaction term.}}
 \end{table}
 
-
-
 \section{Results}
+Now that the methods that will be used have been laid out and the models that will be fit have been defined, let's take a look at how well each model performs.\\
+
 \subsection{Linear Models}
+First up are the linear models. Recall that ideally there is something that we can do to get the best predictions out of these models. This would provide evidence that the formula for ESPN's total QBR might be more complicated than it needs to be. Table~\ref{tab:lm} summarizes the results of the six fitted linear models, along with the bagging results.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Model & RMSE & Bagged (RMSE) \\
+\hline
+1 & 16.104 & 16.103 \\
+\hline
+2 & 16.323 & 16.323 \\
+\hline
+3 & 18.150 & 18.149 \\
+\hline
+4 & 16.045 & 16.045 \\
+\hline
+5 & 16.111 & 16.112 \\
+\hline
+6 & 15.940 & 15.940 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:lm} \textbf{Table of RMSE's for fitted linear models and bagged linear models.}}
+\end{table}
+
 
 
 \section{Conclusion}
