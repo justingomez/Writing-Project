@@ -234,7 +234,7 @@ gam.boot.rmse3<-rmse(mean.pred)
 #trees
 tree1<-rpart(mod1,data=train,method="anova")
 plotcp(tree1)
-tree1.prune<-prune(tree1,cp=0.014)
+tree1.prune<-prune(tree1,cp=0.019)
 tree2<-rpart(mod2,data=train,method="anova")
 plotcp(tree2)
 tree2.prune<-prune(tree2,cp=0.0172)

@@ -83,7 +83,7 @@ In American Football, the success of a team can often be attributed to two thing
 \centering
 \includegraphics[width=1.2\textwidth]{salary.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:sal} \textbf{Average salary for current NFL players by position. Data acquired from \url{http://www.spotrac.com/nfl/contracts/}}}
+\caption{\label{fig:sal} Average salary for current NFL players by position. Data acquired from \url{http://www.spotrac.com/nfl/contracts/}}
 \end{figure}
 
 \newpage
@@ -139,14 +139,14 @@ There are two types of trees that can be used to model a process: classification
 \centering
 \includegraphics[width=.7\textwidth]{partspace.jpg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:part} \textbf{Example of a partitioned predictor space with explanatory variables wheelbase and horsepower on the response variable price. Partitions, or splits, are shown as red lines, with the predicted price for each partition also shown in red \cite{partspace}.}}
+\caption{\label{fig:part} Example of a partitioned predictor space with explanatory variables wheelbase and horsepower on the response variable price. Partitions, or splits, are shown as red lines, with the predicted price for each partition also shown in red \cite{partspace}.}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=.7\textwidth]{extree.jpg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:ex} \textbf{Resulting classification tree from the previously pictured partitioning. Simply another way to visualize that regression tree \cite{partspace}.}}
+\caption{\label{fig:ex} Resulting classification tree from the previously pictured partitioning. Simply another way to visualize that regression tree \cite{partspace}.}
 \end{figure}
 
 After a tree has been fully grown, we need to assess whether the model is adequate as is or if it is overfitting the data. This process is referred to ``pruning." We start by finding all possible nested trees (trees which contain a subset of splits as the final tree; these are always smaller as we start by removing splits lower down on the tree first). For each nested tree, we evaluate if our predictions are improved by enough to justify making the split, sometimes called cost-complexity. Pruning ensures that our predictions are as good as they can be for the given predictor set, but that our trees aren't overly complex.\\
@@ -173,7 +173,7 @@ Before we begin fitting models according to specific methods, let's discuss the 
 \centering
 \includegraphics[width=1.2\textwidth]{correlation.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:corr} \textbf{Plot of the correlations between quantitative variables. Size and color of the squares indicate the strength and direction of the relationship. The lower diagonal also gives the correlation coefficients, rounded to two decimal places.}}
+\caption{\label{fig:corr} Plot of the correlations between quantitative variables. Size and color of the squares indicate the strength and direction of the relationship. The lower diagonal also gives the correlation coefficients, rounded to two decimal places.}
 \end{figure}
 
 Many of the relationships that we see are not surprising, such as the strong positive correlation between the number of completions and the number of attempts or the number of completions and the number of yards. We can also get an idea of each variable's relationship with QBR. Again, not many surprises here. We see positive relationships with completions, yards, and touchdowns, and negative relationships with interceptions, sacks, and fumbles. The only relationship that is a little surprising is the weak negative relationship between pass attempts and QBR, although this may be due to the fact that, in general, quarterbacks in losing situations make more passes. Perhaps a better way bring passing attempts and completions into the model would be as completion percentage, defined as the number of completions divided by the number of attempts. Figure~\ref{fig:corr2} displays the relationships between the variables with completion percentage rather than the two separate variables.\\
@@ -182,7 +182,7 @@ Many of the relationships that we see are not surprising, such as the strong pos
 \centering
 \includegraphics[width=1.2\textwidth]{correlation2.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:corr2} \textbf{Plot of the correlations between quantitative variables with completion percentage rather than number of completions and number of attempts.}}
+\caption{\label{fig:corr2} Plot of the correlations between quantitative variables with completion percentage rather than number of completions and number of attempts.}
 \end{figure}
 
 The relationships between the variables and completion percentage (compp in the figure) aren't altogether unexpected. With all of this information, let's build a few candidate models. Naturally, for all of these models total QBR is the response variable. We will consider three additive model and three models with interactions. The largest additive model has the six important summary statistics of a quarterbacks performance: completion percentage, total yards, number of touchdowns, number of fumbles, number of interceptions thrown, and number of times sacked, as well as the result of the game (win or loss). The second model has all of these variables except for the end result of the game, and the smallest additive model has only four predictors, completion percentage, number of interceptions thrown, number of touchdowns, and total yards. Our interaction models will include all seven predictors as main effects, regardless of the interactions included. The first interaction model will have three pairwise interactions between completion percentage and fumbles, interceptions, and touchdowns. The next model considers three pairwise interactions between the number of sacks and the result of the game, touchdowns, and interceptions. Finally, our third interaction model will include three pairwise interactions between total yards and touchdowns, interceptions, and fumbles. Using these different combinations of variables will act as our tuning step when we begin fitting our models according to the various methods. Table~\ref{tab:models} summarizes the variables that are going into each model.\\
@@ -191,38 +191,38 @@ The relationships between the variables and completion percentage (compp in the 
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-Variables & Abbrev. & Model 1 & Model 2 & Model 3 & Model 4 & Model 5 & Model 6\\
+Variables & Model 1 & Model 2 & Model 3 & Model 4 & Model 5 & Model 6\\
 \hline
-Completion Percent & Compp & X & X & X & I & X & X \\
+Completion Percent & X & X & X & I & X & X \\
 \hline
-Yards & Yds & X & X & X & X & X & I \\
+Yards & X & X & X & X & X & I \\
 \hline
-Touchdowns & Td & X & X & X & I & I & I \\
+Touchdowns & X & X & X & I & I & I \\
 \hline
-Interceptions & Int & X & X & X & I & I & I \\
+Interceptions & X & X & X & I & I & I \\
 \hline
-Sacks & S & X & X &  & X & I & X \\
+Sacks & X & X &  & X & I & X \\
 \hline
-Fumbles & F & X & X &  & I & X & I \\
+Fumbles & X & X &  & I & X & I \\
 \hline
-Game Result & GR & X & & & X & I & X\\
+Game Result & X & & & X & I & X\\
 \hline
 \end{tabular}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{tab:models} \textbf{Table summarizing the variables in each model. `X' indicates the variable is included in that model and `I' indicates the variable is indcluded as part of an interaction term.}}
+\caption{\label{tab:models} Table summarizing the variables in each model. `X' indicates the variable is included in that model and `I' indicates the variable is indcluded as part of an interaction term.}
 \end{table}
 
 \section{Results}
 Now that the methods that will be used have been laid out and the models that will be fit have been defined, let's take a look at how well each model performs.\\
 
 \subsection{Linear Models}
-First up are the linear models. Recall that ideally there is something that we can do to get the best predictions out of these models. This would provide evidence that the formula for ESPN's total QBR might be more complicated than it needs to be. Table~\ref{tab:lm} summarizes the results of the six fitted linear models, along with the bagging results.\\
+First up are the linear models. Recall that ideally there is something that we can do to get the best predictions out of these models. This would provide evidence that the formula for ESPN's total QBR might be more complicated than it needs to be. Table~\ref{tab:lmres} summarizes the results of the six fitted linear models, along with the bagging results.\\
 
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|}
 \hline
-Model & RMSE & Bagged (RMSE) \\
+Model & RMSE & RMSE, Bagged \\
 \hline
 1 & 16.104 & 16.103 \\
 \hline
@@ -238,22 +238,87 @@ Model & RMSE & Bagged (RMSE) \\
 \hline
 \end{tabular}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{tab:lm} \textbf{Table of RMSE's for fitted linear models and bagged linear models.}}
+\caption{\label{tab:lmres} Table of RMSE's for fitted linear models and bagged linear models.}
 \end{table}
 
+Many of the values in the table are similar. We can see that bagging the linear models did not show a great decrease in RMSE, but that was to be expected for these models. The poorest performer is also the smallest model in our set with only four predictors (RMSE of 18.150), which is to be expected. From there, most of the other models have RMSEs around 16.1. The best additive model is the largest model with all of our predictors, and the best model with interaction terms is model six with the three pairwise interactions between yards and touchdowns, interceptions, and fumbles. Overall, it does not appear as though a linear model will be powerful enough to predict total QBR in a reliable way. Moving on to our next most powerful modeling method, the generalized additive models, we hope to see an improvement, even if only slightly. Table~\ref{tab:gamres} summarizes the results of fitting GAMs to the additive models and bagging these models.\\
 
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Model & RMSE & RMSE, Bagged \\
+\hline
+1 & 15.963 & 15.974 \\
+\hline
+2 & 16.160 & 16.175 \\
+\hline
+3 & 18.005 & 18.040 \\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:gamres} Table of RMSE's for fitted generalized additive models and bagged generalized additive models.}
+\end{table}
+
+We see relatively similar results for these models as we did with the linear models. Interestingly enough, all of the bagged GAMs performed worse than the original models, as indicated by the slightly increased RMSEs, although these aren't extremely large increases on this scale. This could be due to the fact that we are fitting smoothing splines with these models, and when we perform the bagging process, we are only looking at a bootstrap sample of our full training set, meaning there is typically less information to fit our splines with, which affects the overall fit. We also see the same pattern of performance in these models; our smallest model performs the worst, and the fullest model performs the best. Again, these RMSEs are higher than we would like in order to say we can accurately predict total QBR. Perhaps regression trees will fit better. Table~\ref{tab:treeres} gives the RMSEs for the three pruned trees, as well as the bagged and boosted results.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Model & RMSE & RMSE, Bagged & RMSE, Boosted \\
+\hline
+1 & 20.667 & 18.806 & 16.062\\
+\hline
+2 & 20.655 & 18.615 & 16.238\\
+\hline
+3 & 20.655 & 19.203 & 18.102\\
+\hline
+\end{tabular}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{tab:treeres} Table of RMSE's for pruned trees, as well as their bagged and boosted results.}
+\end{table}
+
+Before discussing what we learn from this table, we can plot each tree to get a sense for how each tree is processing the information in our training dataset. Figure~\ref{fig:tree1} dislays the tree for the full set of predictors and Figure~\ref{fig:tree1cp} displays the complexity parameters used to prune the original tree, and Figure~\ref{fig:tree2} displays the tree for the two smaller models, which interestingly enough yield the same tree after pruning, and Figures~\ref{fig:tree2cpa} and ~\ref{fig:tree2cpb} also display the complexity parameters that lead to the resulting pruned tree.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{tree1.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{tree1.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{tree1.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{tree1.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.7\textwidth]{tree1.jpg}
+\captionsetup{font=footnotesize,labelfont=footnotesize}
+\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\end{figure}
 
 \section{Conclusion}
 
 \subsection{Final Model Selection}
-
-
-%referencing tables and firgures:
-%Table~\ref{tab:widgets} <-need to include \label in \caption
-%Figure~\ref{fig:frog} <-also include \label in \caption
-
-%Citing Sources:
-Blablabla said Nobody \cite{qbr1}. Also \cite{qbr2}, and \cite{lm}, and \cite{bag} and \cite{gam}.\\
 
 \newpage
 \begin{flushleft}
