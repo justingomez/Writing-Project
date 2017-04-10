@@ -64,13 +64,51 @@ Dr. Mark \textsc{Greenwood} % Supervisor's Name
  
 %----------------------------------------------------------------------------------------
 
+A writing project submitted in partial fulfillment\\
+of the requirements for the degree\\[.25in]
+
 \vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+\begin{titlepage}
+\null
+\vspace{1.in}
+\begin{center}
+{\bf\huge APPROVAL}\\[1.in]
+of a writing project submitted by\\[.25in]
+Justin Gomez \\[1.in]
+\end{center}
+\noindent
+This writing project has been read by the writing project advisor and
+has been found to be satisfactory regarding content, English usage,
+format, citations, bibliographic style, and consistency, and is ready
+for submission to the Statistics Faculty.
+
+\vspace{.3in}
+\begin{center}
+\begin{tabular}{ll}
+\rule{2.75in}{.03in} & \rule{2.75in}{.03in} \\
+Date& Mark C. Greenwood \\
+& Writing Project Advisor \\
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tabular}{ll}
+\rule{2.75in}{.03in} & \rule{2.75in}{.03in} \\
+Date& Mark C. Greenwood \\
+& Writing Projects Coordinator \\
+\end{tabular}
+\end{center}
 
 \end{titlepage}
 
 
 \section{Abstract}
-In 2011, ESPN developed a statistic, total quarterback rating (QBR), to shrink a quarterback's game performance into a single number. This statistic is reportedly difficult to calculate, taking thousands of lines of complicated, dazzling algorithms. This fairly vague explanation leaves many wondering how their statistic is actually calculated. In an attempt to answer this question, we will look at four methods to build models that predict QBR. In order of simplicity, we will fit linear models, generalized additive models, regression trees, and finally random forests. Several sets of predictor variables will be defined and utilized by the appropriate methods. To analyze the predictive accuracy of each model, the data will be split into three sets: a training set to build the models, a testing set to assess predictive power, and a validation set to be used only once on the final chosen model. Root mean squared error can be calculated for each model using the testing set, and this metric can be compared across model and methods to select the best predictive model.\\
+In 2011, ESPN developed a metric, total quarterback rating (QBR), to shrink a quarterback's game performance into a single performance index. This statistic is reportedly difficult to calculate, taking thousands of lines of complicated, dazzling algorithms, although ESPN has never been specific about what is going on in these thousands of lines of code. This fairly vague explanation leaves many wondering how their statistic is actually calculated. In an attempt to answer this question, we will look at four methods to build models that predict QBR. In order of simplicity, we will fit linear models, generalized additive models, regression trees, and finally random forests. In addition to these methods, we will look at two algorithms intended to improve predictive accuracy: bagging and boosting.Several sets of predictor variables will be defined and utilized by the appropriate methods. To analyze the predictive accuracy of each model, the data will be split into three sets: a training set to build the models, a testing set to assess predictive power, and a validation set to be used only once on the final chosen model. Root mean squared error can be calculated for each model using the testing set, and this metric can be compared across model and methods to select the best predictive model. After fitting six models with various combinations of predictors to our four methods and utilizing our improvement algorithms, it appears as though accurately predicting total quarterback rating is beyond the ability of our specified methods.\\
 
 
 \doublespacing
@@ -154,7 +192,7 @@ There are two types of trees that can be used to model a process: classification
 \end{figure}
 
 \newpage
-After a tree has been fully grown, we need to assess whether it is adequate as is or if it is over-fitting the data. This process is referred to as ``pruning." We start by finding all possible nested trees (trees which contain a subset of splits as the final tree; these are always smaller as we start by removing splits lower down on the tree first). For each nested tree, we assess the degree to which our predictions are improved by, looking for enough imporvement to justify making the split. The parameter used to assess this is called the cost-complexity parameter. Pruning ensures that our predictions are as good as they can be for the given predictor set, but that our trees are not unnecessarily complex.\\
+After a tree has been fully grown, we need to assess whether it is adequate as is or if it is over-fitting the data. This process is referred to as ``pruning." We start by finding all possible nested trees (trees which contain a subset of splits as the final tree; these are always smaller as we start by removing splits lower down on the tree first). For each nested tree, we assess the degree to which our predictions are improved by, looking for enough improvement to justify making the split. The parameter used to assess this is called the cost-complexity parameter. Pruning ensures that our predictions are as good as they can be for the given predictor set, but that our trees are not unnecessarily complex.\\
 
 \subsection{Random Forests}
 The final method we will consider is the most powerful one of the four and naturally builds off regression trees. Random forests are commonly turned to for quick and reliable predictions and are often regarded as the golden standard of prediction.\\
@@ -172,7 +210,7 @@ Linear models on their own do not always have the best predictive ability. One m
 Bagging can be a useful tool when used in conjunction with trees, but there are other tools that can prove more useful. Where bagging is performed as an independent process (one fitted tree does not depend on the results of any other fitted tree) boosting is a dependent process in that the models are fit sequentially, and the resulting fit from one depends directly on the fit from the tree that came before it. To start, we fit a tree like we would normally using the full training set. Then, we obtain the residuals from the model, and fit a tree on these residuals. We continue on in this fashion, slowly growing trees and improving our model's prediction power. When fitting these boosted models, there are three things to choose: the number of trees to grow, the shrinkage parameter, and the maximum depth of the tree. The number of trees that we want to grow in our boosting procedure is important as we do not want to cut off the learning procedure too early and end up with a partially boosted model that might not fit as well as it could. The shrinkage parameter helps control how quickly, or slowly, the models learn. Typically, we want the models in this method to grow slowly to avoid over-fitting, so a shrinkage parameter of 0.01 or 0.001 are most often used. The last piece to control in this method is the maximum depth of the tree. This translates to the number of splits that we will have in our tree. A large number of splits, or a deep tree, typically leads to over-fitting, so some thought should be given to this parameter selection \cite{bag}. For our study, we will fit one thousand trees with a shrinkage parameter of 0.01, and a maximum depth of five splits.\\
 
 \section{Fitted Models}
-Before we begin fitting models according to specific methods, let's discuss the models that we will consider fitting with the different methods. Our data set consists of the eight previously discussed games statistics. To understand the relationships present between the quantitivative variables, it may be helpful to examine their correlations in Figure~\ref{fig:corr}.\\
+Before we begin fitting models according to specific methods, let's discuss the models that we will consider fitting with the different methods. Our data set consists of the eight previously discussed games statistics. To understand the relationships present between the quantitative variables, it may be helpful to examine their correlations in Figure~\ref{fig:corr}.\\
 
 \begin{figure}[h]
 \centering
