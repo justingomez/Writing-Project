@@ -248,8 +248,8 @@ tree.rmse2<-rmse(predict(tree2.prune,newdata=test))
 tree.rmse3<-rmse(predict(tree3.prune,newdata=test))
 
 #tree visualization
-fancyRpartPlot(tree1.prune)
-fancyRpartPlot(tree2.prune)
+fancyRpartPlot(tree1.prune,sub="")
+fancyRpartPlot(tree2.prune,sub="")
 
 #variable importance (trees)
 plot(tree1.prune$variable.importance)

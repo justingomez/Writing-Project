@@ -99,7 +99,7 @@ To answer this question, we need as much data on the quarterback as we can colle
 Before we start fitting models, we should make sure we have an understanding of the four methods we will be using. Knowing how models these methods work will give insight into the motivation behind using each, and what we hope to accomplish with each method. We will also discuss some methods to improve upon the base model fits for some of these methods.\\
 
 \subsection{Linear Models}
-We will start with the most simple of the methods we are considering, the linear model. While not often used for prediction but rather more commonly used for inference, we can learn a great deal about how our collected data play into determining total QBR. We will also learn a great deal about ESPN's algorithim if we are able to successfully fit a linear model that generates accurate predictions.\\
+We will start with the most simple of the methods we are considering, the linear model. While not often used for prediction but rather more commonly used for inference, we can learn a great deal about how our collected data play into determining total QBR. We will also learn a great deal about ESPN's algorithm if we are able to successfully fit a linear model that generates accurate predictions.\\
 
 \subsubsection{Explanation}
 Perhaps the most commonly used statistical tool, the linear model can be used in a variety of situations and can give us a great deal of information. We will be using multiple linear regression to estimate our linear models as we have a single explanatory variable and a suite of predictor variables, which we will discuss in more detail later. For now, we will discuss this method in general terms. Equation~\ref{eq:lm} summarizes the general form of these models.\\
@@ -108,10 +108,10 @@ Perhaps the most commonly used statistical tool, the linear model can be used in
 \boldsymbol{Y}=\boldsymbol{X\beta}+\boldsymbol{\epsilon}
 \end{equation}
 
-In this equation, $\boldsymbol{Y}$ is the set of responses and $\boldsymbol{X}$ is the set of explanatory variables, and each row in these matrices represents the measurements taken on a single observation. $boldsymbol{\beta}$ is the set of parameters to be estimated for each predictor and $\boldsymbol{\epsilon}$ is random error. It is important to note that these models are linear in the $\beta$'s. This distinction allows for a variety of nonlinear transformations to be applied to the set of predictors if necessary. From this equation, we can see that the goal of these linear models is to estimate $\beta$'s so that $\boldsymbol{X\beta}$ is as close to $\boldsymbol{Y}$ as possible, and the difference between $\boldsymbol{X\beta}$ and $\boldsymbol{Y}$ is called the error, or the residuals. To generate estimates for $\boldsymbol{\beta}$, we find the values that minimize the sum of the squared residuals, called the least squares estimate $\boldsymbol{\hat{\beta}}$. This estimate is the best choice provided all of the assumptions of the Gauss-Markov theorem are met. Considering the errors, they need to have a mean of zero with constant variance $\sigma^{2}$, and they also cannot be correlated. As mentioned previously, we also need linearity in our $\beta$ estimates. To generate estimates, we also need $\boldsymbol{X}$ to be full column rank. A normal distribution of the errors is often assumed as well, but it is not necessary. Provided these assumptions are all met, then our estimates are the best linear unbiased esimates (commonly referred to as BLUE). Equation~\ref{eq:beta} can be used to generate these estimates.\\
+In this equation, $\boldsymbol{Y}$ is the set of responses and $\boldsymbol{X}$ is the set of explanatory variables, and each row in these matrices represents the measurements taken on a single observation. $\boldsymbol{\beta}$ is the set of parameters to be estimated for each predictor and $\boldsymbol{\epsilon}$ is random error. It is important to note that these models are linear in the $\beta$'s. This distinction allows for a variety of nonlinear transformations to be applied to the set of predictors if necessary. From this equation, we can see that the goal of these linear models is to estimate $\beta$'s so that $\boldsymbol{X\beta}$ is as close to $\boldsymbol{Y}$ as possible, and the difference between $\boldsymbol{X\beta}$ and $\boldsymbol{Y}$ is called the error, or the residuals. To generate estimates for $\boldsymbol{\beta}$, we find the values that minimize the sum of the squared residuals, called the least squares estimate $\boldsymbol{\hat{\beta}}$. This estimate is the best choice provided all of the assumptions of the Gauss-Markov theorem are met. Considering the errors, they need to have a mean of zero with constant variance $\sigma^{2}$, and they also cannot be correlated. As mentioned previously, we also need linearity in our $\beta$ estimates. To generate estimates, we also need $\boldsymbol{X}$ to be full column rank. A normal distribution of the errors is often assumed as well, but it is not necessary. Provided these assumptions are all met, then our estimates are the best linear unbiased estimates (commonly referred to as BLUE). Equation~\ref{eq:beta} can be used to generate these estimates.\\
 
 \begin{equation} \label{eq:beta}
-\boldsymbol{\hat{\beta}}=(\boldsymbol{x}^{T}\boldsymbol{X})^{-1}\boldsymbol{X}^{T}\boldsymbol{y}
+\boldsymbol{\hat{\beta}}=(\boldsymbol{X}^{T}\boldsymbol{X})^{-1}\boldsymbol{X}^{T}\boldsymbol{y}
 \end{equation}
 
 If we have the correct combination of predictors and our data are representative of the population we are interested in, then our model should generate good predictions for future observations \cite{lm}. But sometimes the true relationships between our predictors and the response is more complicated than a simple additive linear model can explain. So we should also consider interaction terms. These terms allow for the relationship between a predictor variable and the response variable to change as the values of a second predictor variable change, that is, the relationship between these variables and the response is not additive. These models can greatly improve fit in many cases, and thus several of them will be considered along with several additive models.\\
@@ -126,7 +126,7 @@ Generalized additive models (or GAMs) allow for the addition of nonlinear relati
 y_{i}=\beta_{0}+\sum_{i=1}^{p} f_{j}(x_{ij})+\epsilon
 \end{equation}
 
-So what are these smooth, nonlinear functions? Each of these functions is a smoothing spline, which is a curve generated by a piecewise polynomial. This is a bit of an oversimplification, but the important thing to note about these splines is that we have the ability to choose the degree of the polynomials in the piecewise function to better fit our data, and also choose the degree of smoothness exhibited by our spline. GAMs are relatively flexible models that allow us to quickly fit nonlinear relationships in an additive way, and they can often generate more accurate estimates than linear models.\\
+So what are these smooth, nonlinear functions? Each of these functions is a smoothing spline, which is a curve generated by a piece-wise polynomial. This is a bit of an oversimplification, but the important thing to note about these splines is that we have the ability to choose the degree of the polynomials in the piece-wise function to better fit our data, and also choose the degree of smoothness exhibited by our spline. GAMs are relatively flexible models that allow us to quickly fit nonlinear relationships in an additive way, and they can often generate more accurate estimates than linear models.\\
 
 
 \subsection{Regression Trees}
@@ -134,22 +134,24 @@ Continuing the trend of increasing the predictive power of our methods, we move 
 
 \subsubsection{Explanation}
 There are two types of trees that can be used to model a process: classification and regression trees. Classification trees are reserved for categorical response variables and regression trees are for quantitative response variables, thus we will be building regression trees in our analyses. The primary goal of a tree is partitioning the data set up into uniform sets on the response variable, or at least as uniform as possible. This is done by looking at the data as a whole, and deciding which variable should be split on first, and where that split should be made. This decision is made such that the observations within each subset have similar total quarterback ratings. Each subset is then examined, and a variable is again chosen to be split on, making these subsets even more similar on total QBR. This splitting process is repeated until making further splits will no longer greatly improve the uniformity of the subgroups. Terminal subgroups, the ones on which further splits are no longer made, are called leaves. Predictions are then generated for each leaf in the tree. This process generates a kind of flow chart, sorting future observations into subgroups and giving a predicted total quarterback rating to these future observations \cite{gam}. Figure~\ref{fig:part} and Figure~\ref{fig:ex} give an example of a partitioned predictor space, as well as the resulting regression tree.\\
+\newpage
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=.7\textwidth]{partspace.jpg}
+\includegraphics[width=.4\textwidth]{partspace.jpg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
 \caption{\label{fig:part} Example of a partitioned predictor space with explanatory variables wheelbase and horsepower on the response variable price. Partitions, or splits, are shown as red lines, with the predicted price for each partition also shown in red \cite{partspace}.}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=.7\textwidth]{extree.jpg}
+\includegraphics[width=.4\textwidth]{extree.jpg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
 \caption{\label{fig:ex} Resulting classification tree from the previously pictured partitioning. Simply another way to visualize that regression tree \cite{partspace}.}
 \end{figure}
 
-After a tree has been fully grown, we need to assess whether the model is adequate as is or if it is overfitting the data. This process is referred to ``pruning." We start by finding all possible nested trees (trees which contain a subset of splits as the final tree; these are always smaller as we start by removing splits lower down on the tree first). For each nested tree, we evaluate if our predictions are improved by enough to justify making the split, sometimes called cost-complexity. Pruning ensures that our predictions are as good as they can be for the given predictor set, but that our trees aren't overly complex.\\
+\newpage
+After a tree has been fully grown, we need to assess whether the model is adequate as is or if it is over-fitting the data. This process is referred to ``pruning." We start by finding all possible nested trees (trees which contain a subset of splits as the final tree; these are always smaller as we start by removing splits lower down on the tree first). For each nested tree, we evaluate if our predictions are improved by enough to justify making the split, sometimes called cost-complexity. Pruning ensures that our predictions are as good as they can be for the given predictor set, but that our trees aren't overly complex.\\
 
 \subsection{Random Forests}
 The final method we will consider is the most powerful one of the four. Random forests are commonly turned to for quick and reliable predictions and are often regarded as the golden standard of prediction.\\
@@ -209,7 +211,7 @@ Game Result & X & & & X & I & X\\
 \hline
 \end{tabular}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{tab:models} Table summarizing the variables in each model. `X' indicates the variable is included in that model and `I' indicates the variable is indcluded as part of an interaction term.}
+\caption{\label{tab:models} Table summarizing the variables in each model. `X' indicates the variable is included in that model and `I' indicates the variable is included as part of an interaction term.}
 \end{table}
 
 \section{Results}
@@ -264,7 +266,7 @@ We see relatively similar results for these models as we did with the linear mod
 
 \begin{table}[h]
 \centering
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
 Model & RMSE & RMSE, Bagged & RMSE, Boosted \\
 \hline
@@ -279,42 +281,54 @@ Model & RMSE & RMSE, Bagged & RMSE, Boosted \\
 \caption{\label{tab:treeres} Table of RMSE's for pruned trees, as well as their bagged and boosted results.}
 \end{table}
 
-Before discussing what we learn from this table, we can plot each tree to get a sense for how each tree is processing the information in our training dataset. Figure~\ref{fig:tree1} dislays the tree for the full set of predictors and Figure~\ref{fig:tree1cp} displays the complexity parameters used to prune the original tree, and Figure~\ref{fig:tree2} displays the tree for the two smaller models, which interestingly enough yield the same tree after pruning, and Figures~\ref{fig:tree2cpa} and ~\ref{fig:tree2cpb} also display the complexity parameters that lead to the resulting pruned tree.\\
+Before discussing what we learn from this table, we can plot each tree to get a sense for how each tree is processing the information in our training dataset. Figure~\ref{fig:tree1} displays the tree for the full set of predictors and Figure~\ref{fig:tree2} displays the tree for the two smaller models, which interestingly enough yield the same tree after pruning. Figure~\ref{fig:treecp} display the complexity parameters used to prune each tree.\\
+\newpage
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=.7\textwidth]{tree1.jpg}
+\includegraphics[width=1.1\textwidth]{tree1.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
 \caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
 \end{figure}
+\newpage
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=.7\textwidth]{tree1.jpg}
+\includegraphics[width=1.1\textwidth]{tree2.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\caption{\label{fig:tree2} Regression tree for the middle and smallest sets of predictor variables.}
 \end{figure}
+
+\newpage
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=.7\textwidth]{tree1.jpg}
+\includegraphics[width=.9\textwidth]{treecp.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
+\caption{\label{fig:treecp} Plots of the complexity parameters for all three sets of predictors. The top plot is for the full set of seven variables and the bottom plot is for the smallest set of variables. The trees are pruned to the last size that is still above the cutoff complexity, indicated by the dotted line.}
 \end{figure}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=.7\textwidth]{tree1.jpg}
-\captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
-\end{figure}
+\newpage
+It's interesting to see how each tree works with the set of information it's given. For example, the tree built on the full set of variables (Figure~\ref{fig:tree1}) is slightly smaller than the trees built on fewer variables (Figure~\ref{fig:tree2}). It also chooses to make a split on result first, which is one of the variables that the other two did not have available to them. As a binary outcome, it seems to make sense that observations in each category are more similar to each other than they would be to observations in the other category. The percentages in the leaves of each tree tell us the percent of the data that ended up in that node. Thinking back to Table~\ref{tab:treeres}, we see that these simple pruned trees fit worse than their linear model counterparts. Even the bagged trees aren't as good at predicting, and it isn't until we perform gradient boosting that the trees start to predict as good as the linear models. Before reflecting on this, there is one more tool left to generate predictions: the powerful random forest. Table~\ref{tab:forestres} summarizes the results of fitting the additive models with this method.\\
 
-\begin{figure}[h]
+\begin{table}[h]
 \centering
-\includegraphics[width=.7\textwidth]{tree1.jpg}
+\begin{tabular}{|c|c|}
+\hline
+Model & RMSE \\
+\hline
+1 & 16.622\\
+\hline
+2 & 16.937\\
+\hline
+3 & 18.419\\
+\hline
+\end{tabular}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:tree1} Regression tree for the full set of predictor variables.}
-\end{figure}
+\caption{\label{tab:forestres} Table of RMSE's for the three fitted random forests.}
+\end{table}
+
+These results, which were supposed to be the best that we would see, are not any better than our original linear models. That makes three sets of more sophisticated methods (GAMs, trees, forests) and two algorithms for improvement (bagging and boosting) that should have generated better predictions than linear models by themselves, and yet they all failed to. We see relatively high RMSEs across the board, hovering around sixteen for just about every model that we fit with our various methods.\\
 
 \section{Conclusion}
 
