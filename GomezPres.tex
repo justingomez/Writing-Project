@@ -182,9 +182,41 @@
 		\begin{itemize}
 			\item Models judged and compared according to RMSE
 		\end{itemize}
-		%\begin{equation}
-			%RMSE=\sqrt{\frac{\sum_{i=1}^{n}(\hat{y_{i}}-y_{i})^{2}}{n}
-		%\end{equation}		
+		\begin{equation}
+			RMSE=\sqrt{\frac{\sum_{i=1}^{n}(\hat{y_{i}}-y_{i})^{2}}{n}}
+		\end{equation}		
+		\begin{itemize}
+			\item Small RMSE indicates good predictive power
+		\end{itemize}
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|c|c|}
+				\hline
+				Base Tree & Bagged Tree & Boosted Tree\\
+				\hline
+				21.138 & 20.401 & 19.920\\
+				\hline
+			\end{tabular}
+		\caption{RMSEs for simple model with QBR as the response and completion percentage and touchdowns as predictors.}
+		\end{table}
+	\end{frame}
+
+	\begin{frame}{Conclusions}
+		\begin{itemize}
+			\item Trees are powerful prediction tools
+			\item Bagging improves predictive ability
+			\item Boosting offers even more improvement
+		\end{itemize}
+		Further work:
+		\begin{itemize}
+			\item Expand model space to more complex models
+			\item Fit linear/generalized additive models, random forests
+			\item Select best prediction method and generate final RMSE
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{References}
+
 	\end{frame}
 	
 \end{document}

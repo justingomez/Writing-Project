@@ -330,6 +330,16 @@ forest.rmse1<-rmse(predict(forest1,newdata=test,type="response"))
 forest.rmse2<-rmse(predict(forest2,newdata=test,type="response"))
 forest.rmse3<-rmse(predict(forest3,newdata=test,type="response"))
 
+#checking
+set.seed(4141993)
+forest1<-randomForest(mod1,data=train,ntree=1000,importance=TRUE,do.trace=500)
+#rmse is stil about 16.49, so we might be ok...
+
+plot(y=test$qbr,x=predict(forest1,newdata=test,type="response"))
+abline(a=0,b=1,col="red",lwd=3)
+#evidence that we're ok...
+
+
 #variable importance (forest)
 varImpPlot(forest1)
 varImpPlot(forest2)
@@ -355,16 +365,47 @@ partialPlot(forest3,pred.data=train,x.var=compp)
 
 
 ####### example tree and partition space ########
+#base tree
 mod.ex<-qbr~compp+td
 tree.ex1<-rpart(mod.ex,data=train,method="anova",model=TRUE)
 tree.prune.ex1<-prune(tree.ex1,cp=0.016)
 fancyRpartPlot(tree.prune.ex1,sub="")
+#rmse func
+rmse<-function(a){
+  error<-a-test$qbr
+  sqrt(mean(error^2))
+}
+
+base.ex<-rmse(predict(tree.prune.ex1,newdata=test))
 
 library(tree)
 tree.ex<-tree(mod.ex,data=train,model=TRUE)
 partition.tree(tree.ex)
 tree.prune<-prune.tree(tree.ex,best=6)
 partition.tree(tree.prune,main="Partitioned Predictor Space")
+
+#boosted tree
+set.seed(4141993)
+gbm.ex<-gbm(mod.ex,data=train,distribution="gaussian",n.trees=1000,interaction.depth=2
+          ,shrinkage=.01)
+boost.ex<-rmse(predict(gbm.ex,newdata=test,n.trees=1000,type="response"))
+
+#bagged tree
+n<-1000
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+  these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+  boot<-train[c(these,2463),]
+  boot$result<-factor(boot$result,levels=c("T","L","W"))
+  tree.boot<-rpart(mod.ex,data=boot)
+  boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+  mean.pred[i]<-mean(boot.pred[i,])
+}
+bagged.ex<-rmse(mean.pred)
 
 
 
