@@ -354,15 +354,17 @@ partialPlot(forest3,pred.data=train,x.var=compp)
 
 
 
+####### example tree and partition space ########
+mod.ex<-qbr~compp+td
+tree.ex1<-rpart(mod.ex,data=train,method="anova",model=TRUE)
+tree.prune.ex1<-prune(tree.ex1,cp=0.016)
+fancyRpartPlot(tree.prune.ex1,sub="")
 
-
-
-
-
-
-
-
-
+library(tree)
+tree.ex<-tree(mod.ex,data=train,model=TRUE)
+partition.tree(tree.ex)
+tree.prune<-prune.tree(tree.ex,best=6)
+partition.tree(tree.prune,main="Partitioned Predictor Space")
 
 
 
