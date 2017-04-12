@@ -339,6 +339,10 @@ plot(y=test$qbr,x=predict(forest1,newdata=test,type="response"))
 abline(a=0,b=1,col="red",lwd=3)
 #evidence that we're ok...
 
+lm.test<-lm(qbr~1,data=train)
+pred.test<-predict(lm.test,newdata=test)
+rmse(pred.test)
+
 
 #variable importance (forest)
 varImpPlot(forest1)
@@ -407,5 +411,7 @@ for(i in 1:nrow(test)){
 }
 bagged.ex<-rmse(mean.pred)
 
+plot(train$qbr~train$compp,xlab="Completion Percentage",ylab="QBR",xlim=c(0.3,1),ylim=c(0,100))
+plot(train$qbr~train$td,xlab="Number of Touchdowns",ylab="QBR",ylim=c(0,100))
 
 

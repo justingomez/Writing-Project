@@ -52,8 +52,14 @@
 	\end{frame}
 	
 	\begin{frame}{ESPN's Total QBR}
+		\begin{itemize}
+			\item Developed in 2011 as a competitor for the NFL's "passer rating" (which ranges from 0 to 158.3)
+			\item Uses play-by-play data
+			\item Updates continuously as game plays out
+		\end{itemize}
+		\begin{block}{Pros/Cons}
 		\begin{columns}
-			\begin{column}[t]{0.5\textwidth}
+			\begin{column}[t]{0.4\textwidth}
 				Pros
 				\begin{itemize}
 					\item Intuitive scale (0-100)
@@ -77,18 +83,23 @@
 				\end{itemize}
 			\end{column}
 		\end{columns}
+		\end{block}
 	\end{frame}
 
 	\begin{frame}{Variables}
-	Seven Predictors:
-	\begin{itemize}
-		\item Completion Percentage (compp)
-		\item Number of interceptions (int)
-		\item Number of fumbles (fum)
-		\item Total yards (yds)
-		\item Game result (result)
-		\item Number of sacks (sack)
-		\item Total touchdowns (td)
+		\begin{itemize}
+			\item Seven Predictors:
+			\begin{itemize}
+				\item Completion Percentage
+				\item Number of interceptions
+				\item Number of fumbles
+				\item Total yards
+				\item Game result
+				\item Number of sacks
+				\item Total touchdowns)
+			\end{itemize}
+			\item All predictors are post-game summaries
+			\item Several predictors are correlated
 		\end{itemize}
 	\end{frame}
 
@@ -115,6 +126,18 @@
 			\item Bootstrap Aggregating (bagging)
 			\item Boosting
 		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Simple Model}
+		How well do completion percentage and number of touchdowns predict QBR?
+		\begin{columns}
+			\begin{column}[t]{.5\textwidth}
+				\includegraphics[scale=.45]{scatter1.jpeg}
+			\end{column}
+			\begin{column}[t]{.5\textwidth}
+				\includegraphics[scale=.45]{scatter2.jpeg}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}{Regression Trees}
@@ -161,17 +184,17 @@
 
 	\begin{frame}{Boosting}
 		\begin{itemize}
-			\item Performed on full training set
-			\item Slow learning algorithm
-			\item Typically performs better than a random forest
 			\item High level algorithm:
 			\begin{itemize}
 				\item Grow tree with training set
 				\item Predict values for new observations
 				\item Find residuals for predictions
 				\item Grow tree with residuals
-				\item Repeat n times
+				\item Repeat many times
 			\end{itemize}
+			\item Performed on full training set
+			\item Slow learning algorithm
+			\item Typically performs better than a random forest
 		\end{itemize}
 		\includegraphics[scale=.4]{boostingex.png}
 	\end{frame}
