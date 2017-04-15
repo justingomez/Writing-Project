@@ -40,11 +40,10 @@
 			\column{0.5\textwidth}
 			\begin{itemize}
 				\item ESPN's Total QBR
-				\item Variables and Models
-				\item Methods
+				\item Collected Data
 				\item Regression Trees
-				\item Bagging
-				\item Boosting
+				\item Bootstrap Aggregation
+				\item Gradient Boosting
 			\end{itemize}
 			\column{0.5\textwidth}
 			\includegraphics[scale=.2]{football-strategy.jpg}
@@ -53,9 +52,10 @@
 	
 	\begin{frame}{ESPN's Total QBR}
 		\begin{itemize}
-			\item Developed in 2011 as a competitor for the NFL's "passer rating" (which ranges from 0 to 158.3)
+			\item Developed in 2011 as a competitor for the NFL's ``passer rating" (which ranges from 0 to 158.3)
 			\item Uses play-by-play data
 			\item Updates continuously as game plays out
+			\item QB must play at least 21 ``action plays"
 		\end{itemize}
 		\begin{block}{Pros/Cons}
 		\begin{columns}
@@ -77,6 +77,7 @@
 				Cons
 				\begin{itemize}
 					\item Complicated
+					\item Expensive
 					\item Vaguely explained
 					\item Subjective
 					\item Proprietary
@@ -84,6 +85,20 @@
 			\end{column}
 		\end{columns}
 		\end{block}
+	\end{frame}
+
+	\begin{frame}{Study Design}
+		\begin{itemize}
+			\item Initial data set: more than 5000 ratings over 11 years
+			\begin{itemize}
+				\item Training set: 50\% of initial set
+				\item Testing set: 30\% of initial set
+				\item Validation set: 20\% of initial set
+			\end{itemize}
+			\item Fit models on training set
+			\item Generate predictions on testing set
+			\item After selecting final model, generate predictions on validation set
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}{Variables}
@@ -97,10 +112,8 @@
 				\item Total yards
 				\item Game result
 				\item Number of sacks
-				\item Total touchdowns)
+				\item Total touchdowns
 			\end{itemize}
-			\item All predictors are post-game summaries
-			\item Several predictors are correlated
 		\end{itemize}
 	\end{frame}
 
@@ -114,35 +127,36 @@
 	
 	\section{Methods}
 	
-	\begin{frame}{Methods Overview}
-		Four modeling techniques:
-		\begin{itemize}
-			\item Linear models
-			\item Generalized additive models
-			\item Regression trees
-			\item Random forests
-		\end{itemize}
-		Two improvement algorithms:
-		\begin{itemize}
-			\item Bootstrap Aggregating (bagging)
-			\item Boosting
-		\end{itemize}
-	\end{frame}
+%	\begin{frame}{Methods Overview}
+%		Four modeling techniques:
+%		\begin{itemize}
+%			\item Linear models
+%			\item Generalized additive models
+%			\item Regression trees
+%			\item Random forests
+%		\end{itemize}
+%		Two improvement algorithms:
+%		\begin{itemize}
+%			\item Bootstrap Aggregating (bagging)
+%			\item Boosting
+%		\end{itemize}
+%	\end{frame}
 
 	\begin{frame}{Simple Model}
 		How well do completion percentage and number of touchdowns predict QBR?
 		\begin{columns}
-			\begin{column}[t]{.5\textwidth}
+			\begin{column}[t]{.6\textwidth}
 				\includegraphics[scale=.45]{scatter1.jpeg}
 			\end{column}
-			\begin{column}[t]{.5\textwidth}
-				\includegraphics[scale=.45]{scatter2.jpeg}
+			\begin{column}[t]{.6\textwidth}
+				\includegraphics[scale=.28]{scatter2.jpeg}
 			\end{column}
 		\end{columns}
 	\end{frame}
 
 	\begin{frame}{Regression Trees}
-		Primary goal: partitioning the predictor space
+		Excellent predicting technique\\
+		Primary goal: partitioning the predictor space\\
 		\vspace{20pt}
 		\begin{columns}
 			\begin{column}[t]{0.5\textwidth}
@@ -156,7 +170,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{Bootstrap Aggregation}
+	\begin{frame}{Bootstrap Aggregation (Bagging)}
 		\begin{columns}
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
@@ -166,7 +180,7 @@
 						\item Grow regression tree
 						\item Use tree to predict values\\
 						for new observations
-						\item Repeat n times
+						\item Repeat many times
 						\item Aggregate predictions 
 					\end{itemize}
 					\item Benefits:
@@ -183,7 +197,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{Boosting}
+	\begin{frame}{Gradient Boosting}
 		\begin{itemize}
 			\item High level algorithm:
 			\begin{itemize}
@@ -195,7 +209,7 @@
 			\end{itemize}
 			\item Performed on full training set
 			\item Slow learning algorithm
-			\item Typically performs better than a random forest
+			\item Typically results in best predictions
 		\end{itemize}
 	\end{frame}
 
@@ -238,9 +252,8 @@
 
 	\begin{frame}{Conclusions}
 		\begin{itemize}
-			\item Trees are powerful prediction tools
-			\item Bagging improves predictive ability
-			\item Boosting offers even more improvement
+			\item Trees are powerful tools for prediction
+			\item Bagging and boosting offer improved predictions
 		\end{itemize}
 		Further work:
 		\begin{itemize}
@@ -251,7 +264,14 @@
 	\end{frame}
 
 	\begin{frame}{References}
-
+		\begin{itemize}
+			\item \textit{NFL Quarterback Rating Formula}. \url{http://www.nfl.com/help/quarterbackratingformula}.
+			\item Faraway, J. J. \textit{Linear Models with R}. Taylor and Francis, 2009.
+			\item James, G., Witten, D., Hastie, T., and Tibshirani, R. \textit{An Introduction to Statistical Learning}. Springer, 2015.
+			\item Kuhn, M., and Johnson, K. \textit{Applied Predictive Modeling}. Springer, 2013. \url{http://bleacherreport.com/articles/1640782-the-anatomy-of-a-53-man-roster-in-the-nfl}, 2013.
+			\item Oliver, D. \textit{Guide to the Total Quarterback Rating}.\\
+			\url{http://www.espn.com/nfl/story/_/id/6833215/explaining-statistics-total-quarterback-rating}, 2011.
+		\end{itemize}
 	\end{frame}
 	
 \end{document}

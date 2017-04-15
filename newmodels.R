@@ -8,6 +8,7 @@ library(gbm)
 library(rattle)
 library(MuMIn)
 library(caret)
+library(beanplot)
 
 train<-read.csv("trainingdata.csv")[,-c(1,15)]
 train$compp<-train$comp/train$att
@@ -367,7 +368,11 @@ partialPlot(forest3,pred.data=train,x.var=td)
 partialPlot(forest3,pred.data=train,x.var=compp)
 
 
-
+#graphics for pres0
+beanplot(train$qbr~as.factor(train$td),col=c(1,2,3,4))
+mtext("Number of Touchdowns",side=1,cex=1.5,line=2.5)
+mtext("Total QBR",side=2,cex=1.5,line=2.5)
+         
 ####### example tree and partition space ########
 #base tree
 mod.ex<-qbr~compp+td
