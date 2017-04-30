@@ -19,6 +19,7 @@
 
 \title[ESPN's Total QBR]{Investigation of ESPN's Total Quarterback Rating}
 \author{Justin Gomez}
+
 \institute{Montana State University}
 \date{April 17, 2017}
 
@@ -26,6 +27,9 @@
 	
 	\begin{frame}
 		\titlepage
+		\centering
+		\small
+		Advisor: Dr. Mark Greenwood
 	\end{frame}
 	
 	% Uncomment these lines for an automatically generated outline.
@@ -157,6 +161,7 @@
 	\begin{frame}{Regression Trees}
 		Excellent predicting technique\\
 		Primary goal: partitioning the predictor space\\
+		Can be fit in R with rpart relatively quickly\\
 		\vspace{20pt}
 		\begin{columns}
 			\begin{column}[t]{0.5\textwidth}
@@ -168,6 +173,7 @@
 				\includegraphics[scale=.5]{extree.jpeg}
 			\end{column}
 		\end{columns}
+		Drawback: Only fitting one tree: small changes in X's yield changes in tree fit\\
 	\end{frame}
 
 	\begin{frame}{Bootstrap Aggregation (Bagging)}
@@ -202,14 +208,14 @@
 			\item High level algorithm:
 			\begin{itemize}
 				\item Grow tree with training set
-				\item Predict values for new observations
+				\item Generate predictions for training set
 				\item Find residuals for predictions
 				\item Grow tree with residuals
-				\item Repeat many times
+				\item Repeat sequentially
 			\end{itemize}
 			\item Performed on full training set
 			\item Slow learning algorithm
-			\item Typically results in best predictions
+			\item Results in some of the best predictions possible
 		\end{itemize}
 	\end{frame}
 
@@ -232,18 +238,18 @@
 			\item Models judged and compared according to RMSE
 		\end{itemize}
 		\begin{equation}
-			RMSE=\sqrt{\frac{\sum_{i=1}^{n}(\hat{y_{i}}-y_{i})^{2}}{n}}
+			RMSE=\sqrt{\frac{\sum_{i=1}^{n}(y_{i}-\hat{y_{i}})^{2}}{n}}
 		\end{equation}		
 		\begin{itemize}
-			\item Small RMSE indicates good predictive power
+			\item RMSE found on testing data set
 		\end{itemize}
 		\begin{table}
 			\centering
-			\begin{tabular}{|c|c|c|}
+			\begin{tabular}{|c|c|c|c|}
 				\hline
-				Base Tree & Bagged Tree & Boosted Tree\\
+				Mean Only & Base Tree & Bagged Tree & Boosted Tree\\
 				\hline
-				21.138 & 20.401 & 19.920\\
+				25.646 & 21.138 & 20.401 & 19.920\\
 				\hline
 			\end{tabular}
 		\caption{RMSEs for simple model with QBR as the response and completion percentage and touchdowns as predictors.}
@@ -252,8 +258,9 @@
 
 	\begin{frame}{Conclusions}
 		\begin{itemize}
-			\item Trees are powerful tools for prediction
-			\item Bagging and boosting offer improved predictions
+			\item Trees are powerful tools for quick predictions
+			\item Bagging and boosting offer marginal improvement
+			\item Can we predict total QBR?
 		\end{itemize}
 		Further work:
 		\begin{itemize}
@@ -264,13 +271,19 @@
 	\end{frame}
 
 	\begin{frame}{References}
+	\small
 		\begin{itemize}
 			\item \textit{NFL Quarterback Rating Formula}. \url{http://www.nfl.com/help/quarterbackratingformula}.
 			\item Faraway, J. J. \textit{Linear Models with R}. Taylor and Francis, 2009.
 			\item James, G., Witten, D., Hastie, T., and Tibshirani, R. \textit{An Introduction to Statistical Learning}. Springer, 2015.
-			\item Kuhn, M., and Johnson, K. \textit{Applied Predictive Modeling}. Springer, 2013. \url{http://bleacherreport.com/articles/1640782-the-anatomy-of-a-53-man-roster-in-the-nfl}, 2013.
+			\item Kuhn, M., and Johnson, K. \textit{Applied Predictive Modeling}. Springer, 2013.
 			\item Oliver, D. \textit{Guide to the Total Quarterback Rating}.\\
 			\url{http://www.espn.com/nfl/story/_/id/6833215/explaining-statistics-total-quarterback-rating}, 2011.
+			\item Terry Therneau, Beth Atkinson and Brian Ripley (2015). \textit{rpart:
+			Recursive Partitioning and Regression Trees}. R package version
+			4.1-10.
+			\item Greg Ridgeway with contributions from others (2015). \textit{gbm: Generalized
+			Boosted Regression Models}. R package version 2.1.1.
 		\end{itemize}
 	\end{frame}
 	

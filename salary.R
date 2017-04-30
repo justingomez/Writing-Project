@@ -12,6 +12,7 @@ m<-rep(12,22)
 for (i in 1:22) {
   m[i]<-mean(all.players$avg[all.players$pos==u[i]])
 }
+write.csv(all.players,"salary.csv",row.names=FALSE)
 o1<-order(m,decreasing=TRUE)
 o2<-order(m,decreasing=FALSE)
 tab<-data.frame(Position=u[o1],Average=m[o1])

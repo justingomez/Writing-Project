@@ -29,7 +29,12 @@ corrplot.mixed(c2,upper="square",title="Correlation Between Variables",mar=c(2,0
                cl.ratio=.2,cl.align.text="l",cl.offset=.3,cl.length=11,cl.cex=.9,
                outline=TRUE,addgrid.col="black",number.cex=1,col=col4(10),tl.cex=.75)
 
-pairs.panels(train[,c(4,5,8:12,14)])
+par(mfrow=c(2,3))
+plot(train$qbr~train$compp,main="Completion Percentage",ylab="QBR",xlab="Completion Percentage")
+titles<-c("Yards","Touchdowns","Interceptions","Sacks","Fumbles")
+for(i in 8:12) {
+   plot(train$qbr~train[,i],main=titles[i-7],xlab=titles[i-7],ylab="QBR")
+}
 
 mod1<-qbr~comp+att+yds+td+int+sack+fum
 mod2<-qbr~compp+yds+td+int+sack+fum

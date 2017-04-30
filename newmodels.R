@@ -18,18 +18,6 @@ test<-read.csv("testingdata.csv")[,-c(1,15)]
 test$compp<-test$comp/test$att
 test$result<-factor(test$result,levels=c("T","L","W"))
 
-oop<-options(na.action = "na.fail")
-#best interaction models
-mod.global<-lm(qbr~.+result*yds+result*td+result*int+result*sack+result*fum+result*compp+
-                 yds*td+yds*int+yds*sack+yds*fum+yds*compp+td*int+td*sack+td*fum+td*compp+
-                 int*sack+int*fum+int*compp+sack*fum+sack*compp+fum*compp
-                 ,data=train[-c(1,2,3,6,7,13)])
-d<-pdredge(mod.global,m.lim=c(7,13),fixed=~yds+td+int+sack+fum+compp,trace=TRUE)
-
-#best additive models
-mod.global1<-lm(qbr~.,data=train[-c(1,2,3,6,7,13)])
-d1<-pdredge(mod.global1,trace=TRUE)
-
 #or just specify my own models and check AIC...
 mod1<-qbr~compp+fum+int+sack+td+yds+result
 mod2<-qbr~compp+fum+int+sack+td+yds
@@ -170,11 +158,11 @@ for(i in 1:nrow(test)){
 boot.rmse6<-rmse(mean.pred)
 
 #fitted gams
-gam1<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
+gam1<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
             s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum+result,data=train)
-gam2<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
+gam2<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
             s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum,data=train)
-gam3<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
+gam3<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
             s(int,k=3,bs="ts"),data=train)
 
 #gam rmse
@@ -190,7 +178,7 @@ for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
   boot$result<-factor(boot$result,levels=c("T","L","W"))
-  gam.boot<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
+  gam.boot<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
                   s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum+result,data=boot)
   boot.pred[,i]<-predict(gam.boot,newdata=test,type="response")
 }
@@ -206,7 +194,7 @@ for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
   boot$result<-factor(boot$result,levels=c("T","L","W"))
-  gam.boot<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
+  gam.boot<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
                   s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum,data=boot)
   boot.pred[,i]<-predict(gam.boot,newdata=test,type="response")
 }
@@ -222,7 +210,7 @@ for (i in 1:n) {
   these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
   boot<-train[c(these,2463),]
   boot$result<-factor(boot$result,levels=c("T","L","W"))
-  gam.boot<-gam(qbr~s(compp,k=10,bs="ts")+s(yds,k=15,bs="ts")+s(td,k=3,bs="ts")+
+  gam.boot<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
                   s(int,k=3,bs="ts"),data=boot)
   boot.pred[,i]<-predict(gam.boot,newdata=test,type="response")
 }
@@ -322,14 +310,26 @@ tree.boot.rmse3<-rmse(mean.pred)
 #random forest
 set.seed(4141993)
 forest1<-randomForest(mod1,data=train,ntree=1000,importance=TRUE)
+plot(forest1) #likely only need 100
+forest1.new<-randomForest(mod1,data=train,ntree=100,importance=TRUE)
+plot(forest1.new)
 set.seed(4141994)
 forest2<-randomForest(mod2,data=train,ntree=1000,importance=TRUE)
+plot(forest2)#100 trees
+forest2.new<-randomForest(mod2,data=train,ntree=100,importance=TRUE)
+plot(forest2.new)
 set.seed(4141995)
 forest3<-randomForest(mod3,data=train,ntree=1000,importance=TRUE)
+plot(forest3) #same
+forest3.new<-randomForest(mod3,data=train,ntree=100,importance=TRUE)
+plot(forest3.new)
 
 forest.rmse1<-rmse(predict(forest1,newdata=test,type="response"))
+forest.rmse1.new<-rmse(predict(forest1.new,newdata=test,type="response"))
 forest.rmse2<-rmse(predict(forest2,newdata=test,type="response"))
+forest.rmse2.new<-rmse(predict(forest2.new,newdata=test,type="response"))
 forest.rmse3<-rmse(predict(forest3,newdata=test,type="response"))
+forest.rmse3.new<-rmse(predict(forest3.new,newdata=test,type="response"))
 
 #checking
 set.seed(4141993)
@@ -346,29 +346,29 @@ rmse(pred.test)
 
 
 #variable importance (forest)
-varImpPlot(forest1)
-varImpPlot(forest2)
-varImpPlot(forest3)
+varImpPlot(forest1.new)
+varImpPlot(forest2.new)
+varImpPlot(forest3.new)
 
 #partial plots
 #forest 1
 par(mfrow=c(3,1))
-partialPlot(forest1,pred.data=train,x.var=int)
-partialPlot(forest1,pred.data=train,x.var=compp)
-partialPlot(forest1,pred.data=train,x.var=td)
+partialPlot(forest1.new,pred.data=train,x.var=int)
+partialPlot(forest1.new,pred.data=train,x.var=compp)
+partialPlot(forest1.new,pred.data=train,x.var=td)
 
 #forest 2
-partialPlot(forest2,pred.data=train,x.var=int)
-partialPlot(forest2,pred.data=train,x.var=td)
-partialPlot(forest2,pred.data=train,x.var=compp)
+partialPlot(forest2.new,pred.data=train,x.var=int)
+partialPlot(forest2.new,pred.data=train,x.var=td)
+partialPlot(forest2.new,pred.data=train,x.var=compp)
 
 #forest 3
-partialPlot(forest3,pred.data=train,x.var=int)
-partialPlot(forest3,pred.data=train,x.var=td)
-partialPlot(forest3,pred.data=train,x.var=compp)
+partialPlot(forest3.new,pred.data=train,x.var=int)
+partialPlot(forest3.new,pred.data=train,x.var=td)
+partialPlot(forest3.new,pred.data=train,x.var=compp)
 
 
-#graphics for pres0
+#graphics for pres
 beanplot(train$qbr~as.factor(train$td),col=c(1,2,3,4))
 mtext("Number of Touchdowns",side=1,cex=1.5,line=2.5)
 mtext("Total QBR",side=2,cex=1.5,line=2.5)
@@ -386,6 +386,11 @@ rmse<-function(a){
 }
 
 base.ex<-rmse(predict(tree.prune.ex1,newdata=test))
+
+#mean only model
+lm.test<-lm(qbr~1,data=train)
+pred.test<-predict(lm.test,newdata=test)
+rmse(pred.test)
 
 library(tree)
 tree.ex<-tree(mod.ex,data=train,model=TRUE)
@@ -431,7 +436,7 @@ points(dat.x,dat.y,lwd=2)
 mtext("Underlying truth: y=cos(x)",side=3,cex=2)
 
 
-par(mfrow=c(3,2))
+par(mfrow=c(2,3))
 boost1<-rpart(dat.y~dat.x,method="anova")
 resid1<-residuals(boost1)
 plot(dat.x,resid1,col="red",lwd=2,ylim=c(-1,1),main="Step 1",xlab="",ylab="")
@@ -479,5 +484,6 @@ par(mfrow=c(1,1))
 plot(sim.y~x,type="l",xlab="",ylab="",lwd=2)
 lines(dat.x,predict(boost1)+predict(boost2)+predict(boost3)+
         predict(boost4)+predict(boost5)+predict(boost6),col="red",lwd=4,lty=2)
+points(dat.x,dat.y,lwd=4)
 mtext("Combined trees",side=3,cex=2)
 
