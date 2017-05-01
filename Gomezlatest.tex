@@ -58,6 +58,12 @@
 \usepackage{caption}
 \usepackage{setspace}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\usepackage{listings}
+\lstset{
+	language=R,
+	basicstyle=\ttfamily
+}
+
 \begin{document}
 
 \begin{titlepage}
@@ -284,18 +290,19 @@ To understand this method better, let's look at a toy example. Consider sampling
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth]{boostex.jpeg}
+	\includegraphics[width=.8\textwidth]{boostex.jpeg}
 	\captionsetup{font=footnotesize,labelfont=footnotesize}
 	\caption{\label{fig:boostex} Sequentially fit trees according to the boosting algorithm. Each plot shows the predictions as a solid line and the residuals as the scattered dots around the predictions. Note that these trees were grown simply as an example to illustrate a point, and in practice we would likely not need to grow all of these trees.}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth]{combine.jpeg}
+	\includegraphics[width=.8\textwidth]{combine.jpeg}
 	\captionsetup{font=footnotesize,labelfont=footnotesize}
 	\caption{\label{fig:combine} Plot of the underlying truth with the predicted values over the full range overlaid. Originally sampled points are also shown.}
 \end{figure}
 
+\newpage
 \section{Fitted Models}
 Before we begin fitting models according to specific methods, let's discuss the models that we will consider fitting with the different methods. Our data set consists of the eight previously discussed game statistics. To understand the relationships present between the quantitative variables, it may be helpful to examine their correlations in Figure~\ref{fig:corr}.
 
@@ -308,8 +315,6 @@ Before we begin fitting models according to specific methods, let's discuss the 
 
 Many of the relationships that we see are not surprising, such as the strong positive correlation between the number of completions and the number of attempts, or the number of completions and the number of yards. We can also get a sense for each variable's relationship with QBR by examining the first row and column. Again, not many surprises here. We see positive relationships with completions, yards, and touchdowns, and negative relationships with interceptions, sacks, and fumbles. The only relationship that is a little surprising is the weak negative relationship between pass attempts and QBR, although this may be due to the fact that, in general, quarterbacks in losing situations make more passes. Perhaps a better way bring passing attempts and completions into the model would be as completion percentage, defined as the number of completions divided by the number of attempts. Figure~\ref{fig:corr2} displays the relationships between the variables with completion percentage rather than the two separate variables, and Figure~\ref{fig:allthescatters} displays plots of each quantitative variable against QBR.
 
-\newpage
-
 \begin{figure}[h]
 \centering
 \includegraphics[width=1.2\textwidth]{correlation2.jpeg}
@@ -319,12 +324,12 @@ Many of the relationships that we see are not surprising, such as the strong pos
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1.2\textwidth]{allthescatters.jpeg}
+	\includegraphics[width=.9\textwidth]{allthescatters.jpeg}
 	\captionsetup{font=footnotesize,labelfont=footnotesize}
 	\caption{\label{fig:allthescatters} Plots of the quantitative variables against QBR.}
 \end{figure}
 
-The relationships between the variables and completion percentage (compp in the figure) are not altogether unexpected. With all of this information, we can build a few candidate models. Naturally, for all these models total QBR is the response variable. We will consider three additive model and three models with interactions. The largest additive model (Model 1) has the six important summary statistics of a quarterbacks performance: completion percentage, total yards, number of touchdowns, number of fumbles, number of interceptions thrown, and number of times sacked, as well as the result of the game (win or loss). The second model (Model 2) has all these variables except for the end result of the game, and the smallest additive model (Model 3) has only four predictors, completion percentage, number of interceptions thrown, number of touchdowns, and total yards. Our interaction models will include all seven predictors as main effects, regardless of the interactions included. The first interaction model (Model 4) will have three pairwise interactions between completion percentage and fumbles, interceptions, and touchdowns. The next model (Model 5) considers three pairwise interactions between the number of sacks and the result of the game, touchdowns, and interceptions. Finally, our third interaction model (Model 6) will include three pairwise interactions between total yards and touchdowns, interceptions, and fumbles. Using these different combinations of variables will act as our tuning step when we begin fitting our models according to the various methods. Table~\ref{tab:models} summarizes the variables that are going into each model.\\
+The relationships between the variables and completion percentage (compp in the figure) are not altogether unexpected. With all of this information, we can build a few candidate models. Naturally, for all these models total QBR is the response variable. We will consider three additive model and three models with interactions. The largest additive model (Model 1) has the six important summary statistics of a quarterbacks performance: completion percentage, total yards, number of touchdowns, number of fumbles, number of interceptions thrown, and number of times sacked, as well as the result of the game (win or loss). The second model (Model 2) has all these variables except for the end result of the game, and the smallest additive model (Model 3) has only four predictors, completion percentage, number of interceptions thrown, number of touchdowns, and total yards. Our interaction models will include all seven predictors as main effects, regardless of the interactions included. The first interaction model (Model 4) will have three pairwise interactions between completion percentage and fumbles, interceptions, and touchdowns. The next model (Model 5) considers three pairwise interactions between the number of sacks and the result of the game, touchdowns, and interceptions. Finally, our third interaction model (Model 6) will include three pairwise interactions between total yards and touchdowns, interceptions, and fumbles. Using these different combinations of variables will act as our tuning step when we begin fitting our models according to the various methods. Table~\ref{tab:models} summarizes the variables that are going into each model.
 
 \begin{table}[h]
 \centering
@@ -354,10 +359,10 @@ Game Result & X & & & X & I & X\\
 When it comes to fitting these models according to specific methods, we can use Models 1-6 for least squares regression but for generalized additive models, regression trees, and random forests, we will only use Models 1-3 as these methods do not allow for the specification of interactions as we would with linear regression. When we fit the GAMs, we will fit third degree polynomials as our splines for each variable. When we perform our bagging and boosting algorithms on each method, we will use the same specified models as we did before performing the improvement.
 
 \section{Results}
-Now that the methods that will be used have been laid out and the models that will be fit have been defined, let's take a look at how well each model performs.\\
+Now that the methods that will be used have been laid out and the models that will be fit have been defined, let's take a look at how well each model performs.
 
 \subsection{Linear Models}
-First up are the linear models. Table~\ref{tab:lmres} summarizes the results of the six fitted linear models, along with the bagging results.\\
+First up are the linear models. Table~\ref{tab:lmres} summarizes the results of the six fitted linear models, along with the bagging results.
 
 \begin{table}[h]
 \centering
@@ -401,7 +406,7 @@ Model & RMSE & RMSE, Bagged \\
 \caption{\label{tab:gamres} Table of RMSE's for fitted generalized additive models and bagged generalized additive models.}
 \end{table}
 
-We see relatively similar results for these models as we did with the linear models. Interestingly enough, all of the bagged GAMs performed worse than the original models, as indicated by the slightly increased RMSEs, although these aren't extremely large increases on this scale. This could be due to the fact that we are fitting smoothing splines with these models, and when we perform the bagging process, we are only looking at a bootstrap sample of our full training set, meaning there is typically less information to fit our splines with, which affects the overall fit. We also see the same pattern of performance in these models; our smallest model performs the worst, and the fullest model performs the best. Again, these RMSEs are higher than we would like in order to say we can accurately predict total QBR. Perhaps regression trees will fit better. Table~\ref{tab:treeres} gives the RMSEs for the three pruned trees, as well as the bagged and boosted results.\\
+We see relatively similar results for these models as we did with the linear models. Interestingly enough, all of the bagged GAMs performed worse than the original models, as indicated by the slightly increased RMSEs, although these aren't extremely large increases on this scale. This could be due to the fact that we are fitting smoothing splines with these models, and when we perform the bagging process, we are only looking at a bootstrap sample of our full training set, meaning there is typically less information to fit our splines with, which affects the overall fit. We also see the same pattern of performance in these models; our smallest model performs the worst, and the fullest model performs the best. Again, these RMSEs are higher than we would like in order to say we can accurately predict total QBR. Perhaps regression trees will fit better. Table~\ref{tab:treeres} gives the RMSEs for the three pruned trees, as well as the bagged and boosted results.
 
 \begin{table}[h]
 \centering
@@ -444,11 +449,11 @@ Before discussing what we learn from this table, we can plot each tree to get a 
 \centering
 \includegraphics[width=.9\textwidth]{treecp.jpeg}
 \captionsetup{font=footnotesize,labelfont=footnotesize}
-\caption{\label{fig:treecp} Plots of the complexity parameters for all three sets of predictors. The top plot is for the full set of seven variables and the bottom plot is for the smallest set of variables. The trees are pruned to the last size that is still above the cutoff complexity, indicated by the dotted line.}
+\caption{\label{fig:treecp} Plots of the complexity parameters for all three sets of predictors. The top plot is for the full set of seven variables and the bottom plot is for the smallest set of variables. The trees are pruned to the simplest tree within one standard error of the minimum complexity.}
 \end{figure}
 
 \newpage
-It's interesting to see how each tree works with the set of information it's given. For example, the tree built on the full set of variables (Figure~\ref{fig:tree1}) is slightly smaller than the trees built on fewer variables (Figure~\ref{fig:tree2}). It also chooses to make a split on result first, which is one of the variables that the other two did not have available to them. As a binary outcome, it seems to make sense that observations in each category are more similar to each other than they would be to observations in the other category. The percentages in the leaves of each tree tell us the percent of the data that ended up in that node. Thinking back to Table~\ref{tab:treeres}, we see that these simple pruned trees fit worse than their linear model counterparts. Even the bagged trees aren't as good at predicting, and it isn't until we perform gradient boosting that the trees start to predict as good as the linear models. Before reflecting on this, there is one more tool left to generate predictions: the powerful random forest. Table~\ref{tab:forestres} summarizes the results of fitting the additive models with this method.\\
+It's interesting to see how each tree works with the set of information it's given. For example, the tree built on the full set of variables (Figure~\ref{fig:tree1}) is slightly smaller than the trees built on fewer variables (Figure~\ref{fig:tree2}). It also chooses to make a split on result first, which is one of the variables that the other two did not have available to them. As a binary outcome, it seems to make sense that observations in each category are more similar to each other than they would be to observations in the other category. The percentages in the leaves of each tree tell us the percent of the data that ended up in that node. Thinking back to Table~\ref{tab:treeres}, we see that these simple pruned trees fit worse than their linear model counterparts. Even the bagged trees aren't as good at predicting, and it isn't until we perform gradient boosting that the trees start to predict as good as the linear models. Before reflecting on this, there is one more tool left to generate predictions: the random forest. Table~\ref{tab:forestres} summarizes the results of fitting the additive models with this method.
 
 \begin{table}[h]
 \centering
@@ -467,16 +472,552 @@ Model & RMSE \\
 \caption{\label{tab:forestres} Table of RMSE's for the three fitted random forests.}
 \end{table}
 
-These results, which were supposed to be the best that we would see, are not any better than our original linear models. That makes three sets of more sophisticated methods (GAMs, trees, forests) and two algorithms for improvement (bagging and boosting) that should have generated better predictions than linear models by themselves, and yet they all failed to. We see relatively high RMSEs across the board, hovering around sixteen for just about every model that we fit with our various methods.\\
+These results, which were supposed to be the best that we would see, are not any better than our original linear models. That makes three sets of more sophisticated methods (GAMs, trees, forests) and two algorithms for improvement (bagging and boosting) that should have generated better predictions than linear models by themselves, and yet they all failed to. We see relatively high RMSEs across the board, hovering around sixteen for just about every model that we fit with our various methods. Plots of fitted versus residuals plots are provided in Figure~\ref{fig:residbyfit} for the top fitting model in each method.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{residbyfit.jpeg}
+	\captionsetup{font=footnotesize,labelfont=footnotesize}
+	\caption{\label{fig:residbyfit} Fitted versus residuals plots for the four methods.}
+\end{figure}
 
 \section{Conclusion}
+With all of these fitted models, we still have one task left: we need to pick the best performing model to generate predictions with using our validation set. Recall that this set was set aside before the analysis began and has not been used yet.
 
 \subsection{Final Model Selection}
+In the beginning, it was assumed that gradient boosted trees or random forests would come out on top, but the model that produced that smallest root-mean squared error on the testing set is the linear model with pairwise interactions between yards and touchdowns, interceptions, and fumbles. thus, this is the model that we will use our validation set on. The fitted model is as follows:
+
+\begin{multline*}
+\hat{y}_{i}=-0.765+63.148compp_{i}-7.331fum_{i}-8.446int_{i}-3.432sack_{i}+10.498td_{i}+\\
+0.085yds_{i}+2.167result_{L}_{i}+9.240result_{W}_{i}-0.021td_{i}\times yds_{i}+\\
+0.005int_{i}\times yds_{i}+0.010fum_{i}\times yds_{i}.\\
+\end{multline*}
+
+Using this model to generate predictions gives us the fitted versus residuals plot in Figure~\ref{fig:finally}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{finally.jpeg}
+	\captionsetup{font=footnotesize,labelfont=footnotesize}
+	\caption{\label{fig:finally} Fitted versus residuals plots for the final set of predictions with the specified linear model on the validation data set.}
+\end{figure}
+
+This final set of predictions looks very similar to the other sets that were generated in Figure~\ref{fig:residbyfit}. The RMSE on this validation set is 15.716, which is on par with what we found on the testing set.
+
+\subsection{Final Thoughts}
+After fitting a great deal of models with all of our discussed methods, what have we learned? Recall that we initially set out to predict ESPN's total quarterback rating with post game summaries only, rather than the more intense play-by-play information. Using passing completion percentage, number of fumbles, number of interceptions thrown, sacks taken, total number of touchdowns scored both through rushing and passing, total number of yards gained both through rushing and passing, and finally the result of the game (win, loss, tie). In order of increasing model flexibility, we fit linear models, generalized additive models, regression trees, and random forests, with bagging and boosting algorithms to help improve each model fit. A linear model ended up performing the best, which was not what was expected as random forests or gradient boosted regression trees should produce the best predictions. And regardless of method, the root-mean squared errors for the predictions are generally large, with most values around 16 units on the QBR scale, and the smallest at 15.94 units on the QBR scale. Considering QBR only ranges from zero to one hundred, these models are not overly reliable. They may give us a pretty good idea for how a quarterback performed, but they definitely aren't getting at the same information that ESPN is. Whatever it is that ESPN's algorithm is doing with the play-by-play level information is more than our post-game summaries can get at with the model space and method we worked with. 
+
+There are several ways this study can be improved and extended in the future. The NFL is has started releasing a set of new statistics the public has never had access to such as maximum and average speeds achieved by players, max distance thrown by the quarterback, and even time from the snap to the release of the football. These are all measures that could help improve our model fits. The model space can also be greatly extended through the use of all subset search methods that test all possible combinations of variables. With as many variables and observations as we have here, this would take a great deal of time and would require clever implementation. It would also be interesting to look more specifically into total QBRs for specific players or teams, or even try modeling a player's rating over the course of the season or his career. Perhaps further analysis will uncover even more interesting relationships and allow fans to gain a peak inside this great sport.
+
+\nocite{*}
 
 \newpage
 \begin{flushleft}
 \bibliographystyle{acm}
 \bibliography{wp}
 \end{flushleft}
+
+\newpage
+\section{Appendix-R Code}
+\singlespacing
+\begin{lstlisting}
+library(corrplot)
+library(randomForest)
+library(rpart)
+library(car)
+library(mgcv)
+library(gbm)
+library(rattle)
+library(MuMIn)
+library(caret)
+library(beanplot)
+#read in train and test
+train<-read.csv("trainingdata.csv")[,-c(1,15)]
+train$compp<-train$comp/train$att
+train$result<-factor(train$result,levels=c("T","L","W"))
+
+test<-read.csv("testingdata.csv")[,-c(1,15)]
+test$compp<-test$comp/test$att
+test$result<-factor(test$result,levels=c("T","L","W"))
+
+#models
+mod1<-qbr~compp+fum+int+sack+td+yds+result
+mod2<-qbr~compp+fum+int+sack+td+yds
+mod3<-qbr~compp+int+td+yds
+mod4<-qbr~compp+fum+int+sack+td+yds+result+compp:fum+compp:int+compp:td
+mod5<-qbr~compp+fum+int+sack+td+yds+result+sack:result+sack:td+sack:int
+mod6<-qbr~compp+fum+int+sack+td+yds+result+yds:td+yds:int+yds:fum
+
+#fitted lms
+lm1<-lm(mod1,data=train)
+lm2<-lm(mod2,data=train)
+lm3<-lm(mod3,data=train)
+lm4<-lm(mod4,data=train)
+lm5<-lm(mod5,data=train)
+lm6<-lm(mod6,data=train)
+#AIC comparison
+aic<-AIC(lm1,lm2,lm3,lm4,lm5,lm6)[,2]
+name<-c("Model 1","Model 2","Model 3","Model 4","Model 5","Model 6")
+s<-order(aic)
+name<-name[s]
+m<-min(aic)
+del<-round(aic[s]-m,2)
+tab.aic<-data.frame(Model=name,AIC=aic,delta=del)
+
+#lm RMSE
+rmse<-function(a){
+error<-a-test$qbr
+sqrt(mean(error^2))
+}
+lm.rmse1<-rmse(predict(lm1,newdata=test,type="response"))
+lm.rmse2<-rmse(predict(lm2,newdata=test,type="response"))
+lm.rmse3<-rmse(predict(lm3,newdata=test,type="response"))
+lm.rmse4<-rmse(predict(lm4,newdata=test,type="response"))
+lm.rmse5<-rmse(predict(lm5,newdata=test,type="response"))
+lm.rmse6<-rmse(predict(lm6,newdata=test,type="response"))
+
+#bagged lms
+n<-1000
+#mod1
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+lm.boot<-lm(mod1,data=boot)
+boot.pred[,i]<-predict(lm.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse1<-rmse(mean.pred)
+#mod2
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141994)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+lm.boot<-lm(mod2,data=boot)
+boot.pred[,i]<-predict(lm.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse2<-rmse(mean.pred)
+#mod3
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141995)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+lm.boot<-lm(mod3,data=boot)
+boot.pred[,i]<-predict(lm.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse3<-rmse(mean.pred)
+#mod4
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141996)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+lm.boot<-lm(mod4,data=boot)
+boot.pred[,i]<-predict(lm.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse4<-rmse(mean.pred)
+#mod5
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141997)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+lm.boot<-lm(mod5,data=boot)
+boot.pred[,i]<-predict(lm.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse5<-rmse(mean.pred)
+#mod6
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141998)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+lm.boot<-lm(mod6,data=boot)
+boot.pred[,i]<-predict(lm.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+boot.rmse6<-rmse(mean.pred)
+
+#fitted gams
+gam1<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
+s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum+result,data=train)
+gam2<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
+s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum,data=train)
+gam3<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
+s(int,k=3,bs="ts"),data=train)
+
+#gam rmse
+gam.rmse1<-rmse(predict(gam1,newdata=test,type="response"))
+gam.rmse2<-rmse(predict(gam2,newdata=test,type="response"))
+gam.rmse3<-rmse(predict(gam3,newdata=test,type="response"))
+
+#bagged gam
+#gam1
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+gam.boot<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
+s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum+result,data=boot)
+boot.pred[,i]<-predict(gam.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+gam.boot.rmse1<-rmse(mean.pred)
+#gam2
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141994)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+gam.boot<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
+s(int,k=3,bs="ts")+s(sack,k=3,bs="ts")+fum,data=boot)
+boot.pred[,i]<-predict(gam.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+gam.boot.rmse2<-rmse(mean.pred)
+#gam3
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141995)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+gam.boot<-gam(qbr~s(compp,k=3,bs="ts")+s(yds,k=3,bs="ts")+s(td,k=3,bs="ts")+
+s(int,k=3,bs="ts"),data=boot)
+boot.pred[,i]<-predict(gam.boot,newdata=test,type="response")
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+gam.boot.rmse3<-rmse(mean.pred)
+
+#trees
+tree1<-rpart(mod1,data=train,method="anova")
+plotcp(tree1)
+tree1.prune<-prune(tree1,cp=0.019)
+tree2<-rpart(mod2,data=train,method="anova")
+plotcp(tree2)
+tree2.prune<-prune(tree2,cp=0.0172)
+tree3<-rpart(mod3,data=train,method="anova")
+plotcp(tree3)
+tree3.prune<-prune(tree3,cp=0.0172)
+
+#pruned trees rmse
+tree.rmse1<-rmse(predict(tree1.prune,newdata=test))
+tree.rmse2<-rmse(predict(tree2.prune,newdata=test))
+tree.rmse3<-rmse(predict(tree3.prune,newdata=test))
+
+#tree visualization
+fancyRpartPlot(tree1.prune,sub="")
+fancyRpartPlot(tree2.prune,sub="")
+
+#variable importance (trees)
+plot(tree1.prune$variable.importance)
+plot(tree2.prune$variable.importance)
+plot(tree3.prune$variable.importance)
+
+#boosting (trees)
+set.seed(4141993)
+gbm1<-gbm(mod1,data=train,distribution="gaussian",n.trees=1000,interaction.depth=2
+,shrinkage=.01)
+set.seed(4141994)
+gbm2<-gbm(mod2,data=train,distribution="gaussian",n.trees=1000,interaction.depth=2
+,shrinkage=.01)
+set.seed(4141995)
+gbm3<-gbm(mod3,data=train,distribution="gaussian",n.trees=1000,interaction.depth=2
+,shrinkage=.01)
+
+gbm.rmse1<-rmse(predict(gbm1,newdata=test,n.trees=1000,type="response"))
+gbm.rmse2<-rmse(predict(gbm2,newdata=test,n.trees=1000,type="response"))
+gbm.rmse3<-rmse(predict(gbm3,newdata=test,n.trees=1000,type="response"))
+
+#bagging (trees)
+#mod1
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+tree.boot<-rpart(mod1,data=boot)
+boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse1<-rmse(mean.pred)
+#mod2
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141994)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+tree.boot<-rpart(mod2,data=boot)
+boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse2<-rmse(mean.pred)
+#mod3
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141995)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+tree.boot<-rpart(mod3,data=boot)
+boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+tree.boot.rmse3<-rmse(mean.pred)
+
+#random forest
+set.seed(4141993)
+forest1<-randomForest(mod1,data=train,ntree=1000,importance=TRUE)
+plot(forest1) #only need 100
+forest1.new<-randomForest(mod1,data=train,ntree=100,importance=TRUE)
+plot(forest1.new)
+set.seed(4141994)
+forest2<-randomForest(mod2,data=train,ntree=1000,importance=TRUE)
+plot(forest2) #100 trees
+forest2.new<-randomForest(mod2,data=train,ntree=100,importance=TRUE)
+plot(forest2.new)
+set.seed(4141995)
+forest3<-randomForest(mod3,data=train,ntree=1000,importance=TRUE)
+plot(forest3) #same
+forest3.new<-randomForest(mod3,data=train,ntree=100,importance=TRUE)
+plot(forest3.new)
+
+forest.rmse1<-rmse(predict(forest1,newdata=test,type="response"))
+forest.rmse1.new<-rmse(predict(forest1.new,newdata=test,type="response"))
+forest.rmse2<-rmse(predict(forest2,newdata=test,type="response"))
+forest.rmse2.new<-rmse(predict(forest2.new,newdata=test,type="response"))
+forest.rmse3<-rmse(predict(forest3,newdata=test,type="response"))
+forest.rmse3.new<-rmse(predict(forest3.new,newdata=test,type="response"))
+
+#checking
+set.seed(4141993)
+forest1<-randomForest(mod1,data=train,ntree=1000,importance=TRUE,do.trace=500)
+#rmse is stil about 16.49, so we might be ok...
+
+plot(y=test$qbr,x=predict(forest1,newdata=test,type="response"))
+abline(a=0,b=1,col="red",lwd=3)
+#evidence that we're ok...
+
+lm.test<-lm(qbr~1,data=train)
+pred.test<-predict(lm.test,newdata=test)
+rmse(pred.test)
+
+#variable importance (forest)
+varImpPlot(forest1.new)
+varImpPlot(forest2.new)
+varImpPlot(forest3.new)
+
+#partial plots
+#forest 1
+par(mfrow=c(3,1))
+partialPlot(forest1.new,pred.data=train,x.var=int)
+partialPlot(forest1.new,pred.data=train,x.var=compp)
+partialPlot(forest1.new,pred.data=train,x.var=td)
+
+#forest 2
+partialPlot(forest2.new,pred.data=train,x.var=int)
+partialPlot(forest2.new,pred.data=train,x.var=td)
+partialPlot(forest2.new,pred.data=train,x.var=compp)
+
+#forest 3
+partialPlot(forest3.new,pred.data=train,x.var=int)
+partialPlot(forest3.new,pred.data=train,x.var=td)
+partialPlot(forest3.new,pred.data=train,x.var=compp)
+
+#graphics for pres
+beanplot(train$qbr~as.factor(train$td),col=c(1,2,3,4))
+mtext("Number of Touchdowns",side=1,cex=1.5,line=2.5)
+mtext("Total QBR",side=2,cex=1.5,line=2.5)
+
+####### example tree and partition space ########
+#base tree
+mod.ex<-qbr~compp+td
+tree.ex1<-rpart(mod.ex,data=train,method="anova",model=TRUE)
+tree.prune.ex1<-prune(tree.ex1,cp=0.016)
+fancyRpartPlot(tree.prune.ex1,sub="")
+#rmse func
+rmse<-function(a){
+error<-a-test$qbr
+sqrt(mean(error^2))
+}
+
+base.ex<-rmse(predict(tree.prune.ex1,newdata=test))
+
+#mean only model
+lm.test<-lm(qbr~1,data=train)
+pred.test<-predict(lm.test,newdata=test)
+rmse(pred.test)
+
+library(tree)
+tree.ex<-tree(mod.ex,data=train,model=TRUE)
+partition.tree(tree.ex)
+tree.prune<-prune.tree(tree.ex,best=6)
+partition.tree(tree.prune,main="Partitioned Predictor Space")
+
+#boosted tree
+set.seed(4141993)
+gbm.ex<-gbm(mod.ex,data=train,distribution="gaussian",n.trees=1000,interaction.depth=2
+,shrinkage=.01)
+boost.ex<-rmse(predict(gbm.ex,newdata=test,n.trees=1000,type="response"))
+
+#bagged tree
+n<-1000
+boot.pred<-matrix(12,ncol=n,nrow=nrow(test))
+set.seed(4141993)
+for (i in 1:n) {
+these<-sample(rownames(train),nrow(train)-1,replace=TRUE)
+boot<-train[c(these,2463),]
+boot$result<-factor(boot$result,levels=c("T","L","W"))
+tree.boot<-rpart(mod.ex,data=boot)
+boot.pred[,i]<-predict(tree.boot,newdata=test)
+}
+mean.pred<-rep(12,nrow(test))
+for(i in 1:nrow(test)){
+mean.pred[i]<-mean(boot.pred[i,])
+}
+bagged.ex<-rmse(mean.pred)
+
+plot(train$qbr~train$compp,xlab="Completion Percentage",ylab="QBR",xlim=c(0.3,1),ylim=c(0,100))
+plot(train$qbr~train$td,xlab="Number of Touchdowns",ylab="QBR",ylim=c(0,100))
+
+#boosting graphic
+x<-seq(0,5,.05)
+sim.y<-cos(5*x)
+plot(sim.y~x,type="l",xlab="",ylab="",lwd=2)
+set.seed(04141993)
+o<-sort(sample.int(101,size=50))
+dat.x<-x[o]
+dat.y<-cos(5*dat.x)
+points(dat.x,dat.y,lwd=2)
+mtext("Underlying truth: y=cos(x)",side=3,cex=2)
+
+
+par(mfrow=c(2,3))
+boost1<-rpart(dat.y~dat.x,method="anova")
+resid1<-residuals(boost1)
+plot(dat.x,resid1,col="red",lwd=2,ylim=c(-1,1),main="Step 1",xlab="",ylab="")
+lines(dat.x,predict(boost1),lwd=2)
+mtext("x",side=1,cex=1,line=2.5)
+mtext("Residuals",side=2,cex=1,line=2.5)
+
+
+boost2<-rpart(resid1~dat.x,method="anova")
+resid2<-residuals(boost2)
+plot(dat.x,resid2,col="blue",lwd=2,ylim=c(-1,1),main="Step 2",xlab="",ylab="")
+lines(dat.x,predict(boost2),lwd=2)
+mtext("x",side=1,cex=1,line=2.5)
+mtext("Residuals",side=2,cex=1,line=2.5)
+
+boost3<-rpart(resid2~resid1+dat.x,method="anova")
+resid3<-residuals(boost3)
+plot(dat.x,resid3,col="green",lwd=2,ylim=c(-1,1),main="Step 3",xlab="",ylab="")
+lines(dat.x,predict(boost3),lwd=2)
+mtext("x",side=1,cex=1,line=2.5)
+mtext("Residuals",side=2,cex=1,line=2.5)
+
+boost4<-rpart(resid3~resid1+resid2+dat.x,method="anova")
+resid4<-residuals(boost4)
+plot(dat.x,resid4,col="hotpink",lwd=2,ylim=c(-1,1),main="Step 4",xlab="",ylab="")
+lines(dat.x,predict(boost4),lwd=2)
+mtext("x",side=1,cex=1,line=2.5)
+mtext("Residuals",side=2,cex=1,line=2.5)
+
+boost5<-rpart(resid4~resid1+resid2+resid3+dat.x,method="anova")
+resid5<-residuals(boost5)
+plot(dat.x,resid5,col="orange",lwd=2,ylim=c(-1,1),main="Step 5",xlab="",ylab="")
+lines(dat.x,predict(boost5),lwd=2)
+mtext("x",side=1,cex=1,line=2.5)
+mtext("Residuals",side=2,cex=1,line=2.5)
+
+boost6<-rpart(resid5~resid1+resid2+resid3+resid4+dat.x,method="anova")
+resid6<-residuals(boost6)
+plot(dat.x,resid6,col="gold",lwd=2,ylim=c(-1,1),main="Step 6",xlab="",ylab="")
+lines(dat.x,predict(boost6),lwd=2)
+mtext("x",side=1,cex=1,line=2.5)
+mtext("Residuals",side=2,cex=1,line=2.5)
+par(mfrow=c(1,1))
+
+plot(sim.y~x,type="l",xlab="",ylab="",lwd=2)
+lines(dat.x,predict(boost1)+predict(boost2)+predict(boost3)+
+predict(boost4)+predict(boost5)+predict(boost6),col="red",lwd=4,lty=2)
+points(dat.x,dat.y,lwd=4)
+mtext("Combined trees",side=3,cex=2)
+
+par(mfrow=c(2,2))
+plot(resid(lm6)~fitted(lm6),xlab="Fitted Values",ylab="Residuals",main="Top Predicting Linear Model: Model 6")
+
+plot(resid(gam1)~fitted(gam1),xlab="Fitted Values",ylab="Residuals",main="Top Predicting GAM: Model 1")
+
+plot(train$qbr-predict(tree1.prune)~predict(tree1.prune),xlab="Fitted Values",ylab="Residuals",main="Top Predictng Tree: Model 1")
+
+plot(train$qbr-predict(forest1.new)~predict(forest1.new),xlab="Fitted Values",ylab="Residuals",main="Top Predictng Forest: Model 1")
+par(mfrow=c(1,1))
+
+valid<-read.csv("validationdata.csv")[,-c(1,15)]
+valid$compp<-valid$comp/valid$att
+valid$result<-factor(valid$result,levels=c("T","L","W"))
+
+rmse<-function(a){
+error<-a-valid$qbr
+sqrt(mean(error^2))
+}
+finally<-rmse(predict(lm6,newdata=valid))
+plot(valid$qbr-predict(lm6,newdata=valid)~predict(lm6,newdata=valid),xlab="Predicted Values",ylab="Residuals")
+
+\end{lstlisting}
 \end{document}
               

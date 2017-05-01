@@ -1,4 +1,3 @@
-#new models chosen by AIC
 library(corrplot)
 library(randomForest)
 library(rpart)
@@ -9,7 +8,7 @@ library(rattle)
 library(MuMIn)
 library(caret)
 library(beanplot)
-
+#read in train and test
 train<-read.csv("trainingdata.csv")[,-c(1,15)]
 train$compp<-train$comp/train$att
 train$result<-factor(train$result,levels=c("T","L","W"))
@@ -18,7 +17,7 @@ test<-read.csv("testingdata.csv")[,-c(1,15)]
 test$compp<-test$comp/test$att
 test$result<-factor(test$result,levels=c("T","L","W"))
 
-#or just specify my own models and check AIC...
+#models
 mod1<-qbr~compp+fum+int+sack+td+yds+result
 mod2<-qbr~compp+fum+int+sack+td+yds
 mod3<-qbr~compp+int+td+yds
@@ -26,17 +25,7 @@ mod4<-qbr~compp+fum+int+sack+td+yds+result+compp:fum+compp:int+compp:td
 mod5<-qbr~compp+fum+int+sack+td+yds+result+sack:result+sack:td+sack:int
 mod6<-qbr~compp+fum+int+sack+td+yds+result+yds:td+yds:int+yds:fum
 
-#six models we will use
-#mod1<-qbr~compp+fum+int+result+sack+td+yds
-#mod2<-qbr~compp+fum+int+sack+td+yds
-#mod3<-qbr~compp+int+sack+td+yds
-#mod4<-qbr~compp+fum+int+result+sack+td+yds+compp*sack+fum*int+fum*sack+int*sack+sack*yds+td*yds
-#mod5<-qbr~compp+fum+int+result+sack+td+yds+fum*result+fum*int+fum*sack+int*sack+td*yds
-#mod6<-qbr~compp+fum+int+result+sack+td+yds+compp*yds+fum*int+fum*sack+sack*yds+td*yds
-
-
-
-#new fitted lms
+#fitted lms
 lm1<-lm(mod1,data=train)
 lm2<-lm(mod2,data=train)
 lm3<-lm(mod3,data=train)
@@ -310,12 +299,12 @@ tree.boot.rmse3<-rmse(mean.pred)
 #random forest
 set.seed(4141993)
 forest1<-randomForest(mod1,data=train,ntree=1000,importance=TRUE)
-plot(forest1) #likely only need 100
+plot(forest1) #only need 100
 forest1.new<-randomForest(mod1,data=train,ntree=100,importance=TRUE)
 plot(forest1.new)
 set.seed(4141994)
 forest2<-randomForest(mod2,data=train,ntree=1000,importance=TRUE)
-plot(forest2)#100 trees
+plot(forest2) #100 trees
 forest2.new<-randomForest(mod2,data=train,ntree=100,importance=TRUE)
 plot(forest2.new)
 set.seed(4141995)
@@ -344,7 +333,6 @@ lm.test<-lm(qbr~1,data=train)
 pred.test<-predict(lm.test,newdata=test)
 rmse(pred.test)
 
-
 #variable importance (forest)
 varImpPlot(forest1.new)
 varImpPlot(forest2.new)
@@ -366,7 +354,6 @@ partialPlot(forest2.new,pred.data=train,x.var=compp)
 partialPlot(forest3.new,pred.data=train,x.var=int)
 partialPlot(forest3.new,pred.data=train,x.var=td)
 partialPlot(forest3.new,pred.data=train,x.var=compp)
-
 
 #graphics for pres
 beanplot(train$qbr~as.factor(train$td),col=c(1,2,3,4))
@@ -487,3 +474,23 @@ lines(dat.x,predict(boost1)+predict(boost2)+predict(boost3)+
 points(dat.x,dat.y,lwd=4)
 mtext("Combined trees",side=3,cex=2)
 
+par(mfrow=c(2,2))
+plot(resid(lm6)~fitted(lm6),xlab="Fitted Values",ylab="Residuals",main="Top Predicting Linear Model: Model 6")
+
+plot(resid(gam1)~fitted(gam1),xlab="Fitted Values",ylab="Residuals",main="Top Predicting GAM: Model 1")
+
+plot(train$qbr-predict(tree1.prune)~predict(tree1.prune),xlab="Fitted Values",ylab="Residuals",main="Top Predictng Tree: Model 1")
+
+plot(train$qbr-predict(forest1.new)~predict(forest1.new),xlab="Fitted Values",ylab="Residuals",main="Top Predictng Forest: Model 1")
+par(mfrow=c(1,1))
+
+valid<-read.csv("validationdata.csv")[,-c(1,15)]
+valid$compp<-valid$comp/valid$att
+valid$result<-factor(valid$result,levels=c("T","L","W"))
+
+rmse<-function(a){
+   error<-a-valid$qbr
+   sqrt(mean(error^2))
+}
+finally<-rmse(predict(lm6,newdata=valid))
+plot(valid$qbr-predict(lm6,newdata=valid)~predict(lm6,newdata=valid),xlab="Predicted Values",ylab="Residuals")
