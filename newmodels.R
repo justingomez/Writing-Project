@@ -327,7 +327,7 @@ forest1<-randomForest(mod1,data=train,ntree=1000,importance=TRUE,do.trace=500)
 
 plot(y=test$qbr,x=predict(forest1,newdata=test,type="response"))
 abline(a=0,b=1,col="red",lwd=3)
-#evidence that we're ok...
+#good sign
 
 lm.test<-lm(qbr~1,data=train)
 pred.test<-predict(lm.test,newdata=test)
